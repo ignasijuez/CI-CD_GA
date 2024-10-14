@@ -50,7 +50,7 @@ jobs:
         #docker exec mysql_db mysqladmin ping -h mysql_db
 
     - name: Check init files
-      run: docker exec -it mysql_db ls /docker-entrypoint-initdb.d/
+      run: docker exec mysql_db ls /docker-entrypoint-initdb.d/
 
     - name: Build
       run: |
