@@ -52,6 +52,12 @@ jobs:
     - name: Check init files
       run: docker exec mysql_db ls /docker-entrypoint-initdb.d/
 
+    - name: Check MySQL databases
+      run: docker exec mysql_db mysql -u root -e "SHOW DATABASES;"
+
+    - name: Check MySQL petclinic tables
+      run: docker exec mysql_db mysql -u root -e "USE petclinic; SHOW TABLES;"
+
     - name: Build
       run: |
         echo 'Clean and package the application'
