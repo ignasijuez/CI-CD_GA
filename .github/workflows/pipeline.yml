@@ -63,7 +63,7 @@ jobs:
       run: docker exec mysql_db mysql -u root -e "SHOW DATABASES;"
 
     - name: Check MySQL petclinic tables
-      run: docker exec mysql_db mysql -u root -e "USE petclinic; SHOW TABLES;"
+      run: docker exec mysql_db mysql -u root -e "USE petclinic; SHOW TABLES; SELECT * FROM vets;"
 
     - name: Build
       run: |
