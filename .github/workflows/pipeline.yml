@@ -31,6 +31,7 @@ jobs:
         docker ps
         #docker compose down
         echo 'Starting MySQL with Docker Compose...'
+        chmod 644 ./src/main/resources/db/mysql/*.sql
         docker compose up -d mysql
         docker ps
         echo "Waiting for MySQL to be ready..."
