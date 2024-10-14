@@ -49,6 +49,9 @@ jobs:
         #echo 'Testing MySQL connection...'
         #docker exec mysql_db mysqladmin ping -h mysql_db
 
+    - name: Check init files
+      run: docker exec -it mysql_db ls /docker-entrypoint-initdb.d/
+
     - name: Build
       run: |
         echo 'Clean and package the application'
