@@ -31,7 +31,6 @@ jobs:
         docker ps
         #docker compose down
         echo 'Starting MySQL with Docker Compose...'
-        chmod 644 ./src/main/resources/db/mysql/*.sql
         docker compose up -d mysql
         docker ps
         echo "Waiting for MySQL to be ready..."
@@ -49,6 +48,13 @@ jobs:
         #run: |
         #echo 'Testing MySQL connection...'
         #docker exec mysql_db mysqladmin ping -h mysql_db
+
+    # Run SQL scripts manually
+    - name: Run MySQL initialization scripts
+      run: |
+        docker exec -i mysql_db mysql -u root < /docker-entrypoint-initdb.d/01_user.sql
+        docker exec -i mysql_db mysql -u root < /docker-entrypoint-initdb.d/02_schema.sql
+        docker exec -i mysql_db mysql -u root < /docker-entrypoint-initdb.d/03_data.sql
 
     - name: Check init files
       run: docker exec mysql_db ls /docker-entrypoint-initdb.d/
