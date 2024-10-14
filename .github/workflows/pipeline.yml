@@ -52,9 +52,9 @@ jobs:
     # Run SQL scripts manually
     - name: Run MySQL initialization scripts
       run: |
-        docker exec -i mysql_db mysql -u root < /docker-entrypoint-initdb.d/01_user.sql
-        docker exec -i mysql_db mysql -u root < /docker-entrypoint-initdb.d/02_schema.sql
-        docker exec -i mysql_db mysql -u root < /docker-entrypoint-initdb.d/03_data.sql
+        docker exec -i mysql_db mysql -u root -e "source /docker-entrypoint-initdb.d/01_user.sql"
+        docker exec -i mysql_db mysql -u root -e "source /docker-entrypoint-initdb.d/02_schema.sql"
+        docker exec -i mysql_db mysql -u root -e "source /docker-entrypoint-initdb.d/03_data.sql"
 
     - name: Check init files
       run: docker exec mysql_db ls /docker-entrypoint-initdb.d/
