@@ -3,7 +3,7 @@ name: Pipeline
 #events
 on:
   push:
-    branches: [ "cicdtest" ]
+    branches: [ "main" ]
     #when someone pushes to branch main it triggers this workflow
   pull_request:
     branches: [ "main" ]
