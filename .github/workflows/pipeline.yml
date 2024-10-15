@@ -47,18 +47,14 @@ jobs:
     - name: Check MySQL logs
       run: docker logs mysql_db
 
-        # - name: Test MySQL Connection
-        #run: |
-        #echo 'Testing MySQL connection...'
-        #docker exec mysql_db mysqladmin ping -h mysql_db
 
     # Run SQL scripts manually
-    - name: Run MySQL initialization scripts
-      run: docker exec -i mysql_db mysql -u root -e "source /docker-entrypoint-initdb.d/01_user.sql"
-    - name: Run MySQL initialization scripts2
-      run: docker exec -i mysql_db mysql -u root -e "source /docker-entrypoint-initdb.d/02_schema.sql"
-    - name: Run MySQL initialization scripts3  
-      run: docker exec -i mysql_db mysql -u root -e "source /docker-entrypoint-initdb.d/03_data.sql"
+    #- name: Run MySQL initialization scripts
+    #  run: docker exec -i mysql_db mysql -u root -e "source /docker-entrypoint-initdb.d/01_user.sql"
+    #- name: Run MySQL initialization scripts2
+    #  run: docker exec -i mysql_db mysql -u root -e "source /docker-entrypoint-initdb.d/02_schema.sql"
+    #- name: Run MySQL initialization scripts3  
+    #  run: docker exec -i mysql_db mysql -u root -e "source /docker-entrypoint-initdb.d/03_data.sql"
 
     - name: Check MySQL container status
       run: docker inspect --format='{{json .State.Health.Status}}' mysql_db
@@ -84,7 +80,7 @@ jobs:
       run: |
         echo 'Clean and package the application'
         mvn spring-javaformat:apply
-        mvn clean package -Dspring.datasource.url=jdbc:mysql://localhost/petclinic
+        mvn clean package #-Dspring.datasource.url=jdbc:mysql://localhost/petclinic
 
     - name: Test
       run: mvn test
