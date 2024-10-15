@@ -38,6 +38,9 @@ jobs:
           sleep 5;
           #done
 
+    - name: Check MySQL container status
+      run: docker inspect --format='{{json .State.Health.Status}}' mysql_db
+
     - name: Check running containers
       run: docker ps
 
@@ -57,8 +60,14 @@ jobs:
     - name: Run MySQL initialization scripts3  
       run: docker exec -i mysql_db mysql -u root -e "source /docker-entrypoint-initdb.d/03_data.sql"
 
+    - name: Check MySQL container status
+      run: docker inspect --format='{{json .State.Health.Status}}' mysql_db
+
     - name: Check init files
       run: docker exec mysql_db ls /docker-entrypoint-initdb.d/
+
+    - name: Check MySQL container status
+      run: docker inspect --format='{{json .State.Health.Status}}' mysql_db
 
     - name: Check MySQL databases
       run: docker exec mysql_db mysql -u root -e "SHOW DATABASES;"
