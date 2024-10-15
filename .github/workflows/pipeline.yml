@@ -61,7 +61,9 @@ jobs:
       run: docker exec mysql_db ls /docker-entrypoint-initdb.d/
 
     - name: Check MySQL databases
-      run: docker exec mysql_db mysql -u root -e "SHOW DATABASES;"
+      run: |
+        docker exec mysql_db mysql -u root -e "SHOW DATABASES;"
+        sleep 5;
 
     - name: Check MySQL petclinic tables
       run: docker exec mysql_db mysql -u root -e "USE petclinic; SHOW TABLES; SELECT * FROM vets;"
