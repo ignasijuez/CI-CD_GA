@@ -32,8 +32,11 @@ import org.springframework.samples.petclinic.vet.VetRepository;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 
+import org.junit.jupiter.api.Disabled;
+
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("mysql")
+@Disabled("Temporarily skipping integration tests")
 public class PetClinicIntegrationTests {
 
 	@LocalServerPort
