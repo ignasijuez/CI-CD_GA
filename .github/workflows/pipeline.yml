@@ -70,7 +70,7 @@ jobs:
       run: |
         echo 'Clean and package the application'
         mvn spring-javaformat:apply
-        mvn clean package #-Dspring.datasource.url=jdbc:mysql://localhost/petclinic
+        mvn clean package -Dspring.datasource.url=jdbc:mysql://localhost/petclinic
 
     - name: Test
       run: mvn test
