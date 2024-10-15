@@ -49,8 +49,7 @@ class MySqlIntegrationTests {
 
 	@ServiceConnection
 	@Container
-	static MySQLContainer<?> container = new MySQLContainer<>("mysql:8.4")
-		.withInitScript("db/mysql/02_schema.sql");
+	static MySQLContainer<?> container = new MySQLContainer<>("mysql:8.4");
 
 	@LocalServerPort
 	int port;
