@@ -26,6 +26,12 @@ jobs:
     - name: Check files
       run: ls -la
 
+    - name: Build
+      run: |
+        echo 'Clean and package the application'
+        mvn spring-javaformat:apply
+        mvn clean package #-Dspring.datasource.url=jdbc:mysql://localhost/petclinic
+
     - name: Start MySQL
       run: |
         docker ps
@@ -76,11 +82,11 @@ jobs:
         docker exec mysql_db mysql -u root -e "USE petclinic; SHOW TABLES; SELECT * FROM vets;"
         sleep 5;
 
-    - name: Build
-      run: |
-        echo 'Clean and package the application'
-        mvn spring-javaformat:apply
-        mvn clean package #-Dspring.datasource.url=jdbc:mysql://localhost/petclinic
+        #- name: Build
+        #run: |
+        #echo 'Clean and package the application'
+        #mvn spring-javaformat:apply
+        #mvn clean package #-Dspring.datasource.url=jdbc:mysql://localhost/petclinic
 
     - name: Test
       run: mvn test
