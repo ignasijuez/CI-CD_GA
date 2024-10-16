@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Disabled;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("mysql")
-//@Disabled("Temporarily skipping integration tests")
+@Disabled("Temporarily skipping integration tests")
 public class PetClinicIntegrationTests {
 
 	@LocalServerPort
