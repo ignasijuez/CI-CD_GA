@@ -26,11 +26,11 @@ jobs:
     - name: Check files
       run: ls -la
 
-    - name: Build
-      run: |
-        echo 'Clean and package the application'
-        mvn spring-javaformat:apply
-        mvn clean package #-Dspring.datasource.url=jdbc:mysql://localhost/petclinic
+        #- name: Build
+        #run: |
+        #echo 'Clean and package the application'
+        #mvn spring-javaformat:apply
+        #mvn clean package #-Dspring.datasource.url=jdbc:mysql://localhost/petclinic
 
     - name: Start MySQL
       run: |
@@ -87,6 +87,13 @@ jobs:
         #echo 'Clean and package the application'
         #mvn spring-javaformat:apply
         #mvn clean package #-Dspring.datasource.url=jdbc:mysql://localhost/petclinic
+
+
+    - name: Build
+      run: |
+        echo 'Clean and package the application'
+        mvn spring-javaformat:apply
+        mvn clean package #-Dspring.datasource.url=jdbc:mysql://localhost/petclinic
 
     - name: Test
       run: mvn test
