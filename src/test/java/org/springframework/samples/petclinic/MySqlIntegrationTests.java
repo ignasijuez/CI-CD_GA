@@ -34,13 +34,10 @@ import org.springframework.samples.petclinic.vet.VetRepository;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.aot.DisabledInAotMode;
 import org.springframework.web.client.RestTemplate;
+import org.testcontainers.containers.Container.ExecResult;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import java.lang.System;
-import org.junit.jupiter.api.Disabled;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("mysql")
@@ -51,23 +48,7 @@ class MySqlIntegrationTests {
 
 	@BeforeAll
 	public static void setUp() {
-		//container.start();  // Ensure the container starts
-		System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MySQL Container is running #######################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################");
-		// Verify container is running and log the JDBC URL
-		/*System.out.println("MySQL Container is running: " + container.isRunning());
-		System.out.println("MySQL Container JDBC URL: " + container.getJdbcUrl());
-
-		// Set system properties for datasource configuration
-		System.setProperty("spring.datasource.url", container.getJdbcUrl());
-		System.setProperty("spring.datasource.username", container.getUsername());
-		System.setProperty("spring.datasource.password", container.getPassword());
-
-		// Optional: Check if container has started correctly
-		if (container.isRunning()) {
-			System.out.println("MySQL container started successfully!");
-		} else {
-			throw new IllegalStateException("MySQL container failed to start.");
-		}*/
+		System.out.println("$$$ MySQL Container before check");
 	}
 
 	@ServiceConnection
@@ -77,7 +58,7 @@ class MySqlIntegrationTests {
 	@BeforeAll
 	public static void setUp2() {
 		//container.start();  // Ensure the container starts
-		System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MySQL Container is running #######################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################");
+		System.out.println("$$$ MySQL Container after check");
 		// Verify container is running and log the JDBC URL
 		System.out.println("MySQL Container is running: " + container.isRunning());
 		System.out.println("MySQL Container JDBC URL: " + container.getJdbcUrl());
@@ -93,6 +74,19 @@ class MySqlIntegrationTests {
 		} else {
 			throw new IllegalStateException("MySQL container failed to start.");
 		}
+	}
+
+	@Test
+	void checkInitScripts() throws Exception {
+    	// Run a command inside the MySQL container to list the files in the init directory
+    	String[] command = { "ls", "/docker-entrypoint-initdb.d/" };
+    	ExecResult execResult = container.execInContainer(command);
+    
+   	 	System.out.println("Files in /docker-entrypoint-initdb.d/:");
+    	System.out.println(execResult.getStdout());
+
+    	// You can also check if specific files are present
+    	assertThat(execResult.getStdout()).contains("02_schema.sql", "03_data.sql");
 	}
 
 	@LocalServerPort
