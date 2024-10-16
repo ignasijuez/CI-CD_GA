@@ -57,7 +57,7 @@ class MySqlIntegrationTests {
 
 	@ServiceConnection
 	@Container
-	static MySQLContainer<?> container = new MySQLContainer<>("mysql:8.4");
+	static MySQLContainer<?> container = new MySQLContainer<>("mysql:8.4").withInitScript("db/mysql2/init.sql");
 
 	// Use DynamicPropertySource to set the datasource properties dynamically from the MySQLContainer
     @DynamicPropertySource
@@ -91,7 +91,7 @@ class MySqlIntegrationTests {
         System.out.println(execResult.getStdout());
 		System.out.println("$$$ F");
         // Check if the expected init scripts are present
-        assertThat(execResult.getStdout()).contains("schema.sql", "data.sql");
+        assertThat(execResult.getStdout()).contains("init.sql");
     }
 
 	@LocalServerPort
