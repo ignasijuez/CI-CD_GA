@@ -59,45 +59,40 @@ class MySqlIntegrationTests {
 	@Container
 	static MySQLContainer<?> container = new MySQLContainer<>("mysql:8.4");
 
-	/*@DynamicPropertySource
+	// Use DynamicPropertySource to set the datasource properties dynamically from the MySQLContainer
+    @DynamicPropertySource
     static void setDatasourceProperties(DynamicPropertyRegistry registry) {
+		System.out.println("$$$ B");
         registry.add("spring.datasource.url", container::getJdbcUrl);
         registry.add("spring.datasource.username", container::getUsername);
         registry.add("spring.datasource.password", container::getPassword);
-    }*/
+		System.out.println("$$$ C");
+    }
 
 	@BeforeAll
-	public static void setUp2() throws UnsupportedOperationException, IOException, InterruptedException {
-		//container.start();  // Ensure the container starts
-		System.out.println("$$$ MySQL Container after check");
-		// Verify container is running and log the JDBC URL
-		System.out.println("MySQL Container is running: " + container.isRunning());
-		System.out.println("MySQL Container JDBC URL: " + container.getJdbcUrl());
+    public static void setUp2() throws UnsupportedOperationException, IOException, InterruptedException {
+        // Print MySQL container information
+		System.out.println("$$$ D");
+        System.out.println("MySQL Container is running: " + container.isRunning());
+        System.out.println("MySQL Container JDBC URL: " + container.getJdbcUrl());
 
-		// Set system properties for datasource configuration
-		System.setProperty("spring.datasource.url", container.getJdbcUrl());
-		System.setProperty("spring.datasource.username", container.getUsername());
-		System.setProperty("spring.datasource.password", container.getPassword());
+        // Optional: Check if container has started correctly
+        if (container.isRunning()) {
+            System.out.println("MySQL container started successfully!");
+        } else {
+            throw new IllegalStateException("MySQL container failed to start.");
+        }
+		System.out.println("$$$ E");
+        // Check if init scripts are available in the container
+        String[] command = { "ls", "/docker-entrypoint-initdb.d/" };
+        ExecResult execResult = container.execInContainer(command);
 
-		// Optional: Check if container has started correctly
-		if (container.isRunning()) {
-			System.out.println("MySQL container started successfully!");
-		} else {
-			throw new IllegalStateException("MySQL container failed to start.");
-		}
-		
-		System.out.println("$$$ AA");
-
-		String[] command = { "ls", "/docker-entrypoint-initdb.d/" };
-    	ExecResult execResult = container.execInContainer(command);
-    
-   	 	System.out.println("Files in /docker-entrypoint-initdb.d/:");
-    	System.out.println(execResult.getStdout());
-
-    	// You can also check if specific files are present
-    	assertThat(execResult.getStdout()).contains("02_schema.sql", "03_data.sql");
-
-	}
+        System.out.println("Files in /docker-entrypoint-initdb.d/:");
+        System.out.println(execResult.getStdout());
+		System.out.println("$$$ F");
+        // Check if the expected init scripts are present
+        assertThat(execResult.getStdout()).contains("02_schema.sql", "03_data.sql");
+    }
 
 	@LocalServerPort
 	int port;
