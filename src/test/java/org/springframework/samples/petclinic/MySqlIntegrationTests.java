@@ -55,7 +55,7 @@ class MySqlIntegrationTests {
 
 	@BeforeAll
 	public static void setUp() {
-		container.start();  // Ensure the container starts
+		//container.start();  // Ensure the container starts
 
 		// Verify container is running and log the JDBC URL
 		System.out.println("MySQL Container is running: " + container.isRunning());
