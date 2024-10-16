@@ -91,7 +91,7 @@ class MySqlIntegrationTests {
         System.out.println(execResult.getStdout());
 		System.out.println("$$$ F");
         // Check if the expected init scripts are present
-        assertThat(execResult.getStdout()).contains("02_schema.sql", "03_data.sql");
+        assertThat(execResult.getStdout()).contains("schema.sql", "data.sql");
     }
 
 	@LocalServerPort
