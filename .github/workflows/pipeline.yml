@@ -32,6 +32,11 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    # Ensure Docker is available for Testcontainers
+    - name: Set up Docker
+      run: |
+        sudo systemctl start docker
+
     - name: Check files
       run: ls -la
 

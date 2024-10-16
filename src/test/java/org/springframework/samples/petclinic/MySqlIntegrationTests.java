@@ -44,7 +44,6 @@ import org.junit.jupiter.api.Disabled;
 @Testcontainers(disabledWithoutDocker = true)
 @DisabledInNativeImage
 @DisabledInAotMode
-@Disabled("Temporarily skipping integration tests")
 class MySqlIntegrationTests {
 
 	@ServiceConnection
