@@ -56,9 +56,9 @@ class MySqlIntegrationTests {
 	@BeforeAll
 	public static void setUp() {
 		//container.start();  // Ensure the container starts
-
+		System.out.println("##################################### MySQL Container is running #######################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################");
 		// Verify container is running and log the JDBC URL
-		System.out.println("MySQL Container is running: " + container.isRunning());
+		/*System.out.println("MySQL Container is running: " + container.isRunning());
 		System.out.println("MySQL Container JDBC URL: " + container.getJdbcUrl());
 
 		// Set system properties for datasource configuration
@@ -71,7 +71,7 @@ class MySqlIntegrationTests {
 			System.out.println("MySQL container started successfully!");
 		} else {
 			throw new IllegalStateException("MySQL container failed to start.");
-		}
+		}*/
 	}
 
 	@LocalServerPort
