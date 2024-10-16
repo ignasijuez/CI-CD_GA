@@ -18,6 +18,7 @@ package org.springframework.samples.petclinic;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledInNativeImage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,29 @@ class MySqlIntegrationTests {
 
 	@ServiceConnection
 	@Container
-	static MySQLContainer<?> container = new MySQLContainer<>("mysql:9.0");
+	static MySQLContainer<?> container = new MySQLContainer<>("mysql:8.4");
+
+	@BeforeAll
+	public static void setUp() {
+		container.start();  // Ensure the container starts
+
+		// Verify container is running and log the JDBC URL
+		System.out.println("MySQL Container is running: " + container.isRunning());
+		System.out.println("MySQL Container JDBC URL: " + container.getJdbcUrl());
+
+		// Set system properties for datasource configuration
+		System.setProperty("spring.datasource.url", container.getJdbcUrl());
+		System.setProperty("spring.datasource.username", container.getUsername());
+		System.setProperty("spring.datasource.password", container.getPassword());
+
+		// Optional: Check if container has started correctly
+		if (container.isRunning()) {
+			System.out.println("MySQL container started successfully!");
+		} else {
+			throw new IllegalStateException("MySQL container failed to start.");
+		}
+	}
+
 	@LocalServerPort
 	int port;
 
