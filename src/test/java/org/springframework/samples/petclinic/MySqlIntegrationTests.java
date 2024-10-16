@@ -74,6 +74,27 @@ class MySqlIntegrationTests {
 	@Container
 	static MySQLContainer<?> container = new MySQLContainer<>("mysql:8.4");
 
+	@BeforeAll
+	public static void setUp2() {
+		//container.start();  // Ensure the container starts
+		System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ MySQL Container is running #######################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################");
+		// Verify container is running and log the JDBC URL
+		System.out.println("MySQL Container is running: " + container.isRunning());
+		System.out.println("MySQL Container JDBC URL: " + container.getJdbcUrl());
+
+		// Set system properties for datasource configuration
+		System.setProperty("spring.datasource.url", container.getJdbcUrl());
+		System.setProperty("spring.datasource.username", container.getUsername());
+		System.setProperty("spring.datasource.password", container.getPassword());
+
+		// Optional: Check if container has started correctly
+		if (container.isRunning()) {
+			System.out.println("MySQL container started successfully!");
+		} else {
+			throw new IllegalStateException("MySQL container failed to start.");
+		}
+	}
+
 	@LocalServerPort
 	int port;
 
