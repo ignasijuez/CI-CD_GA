@@ -18,6 +18,8 @@ package org.springframework.samples.petclinic;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.IOException;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledInNativeImage;
@@ -57,15 +59,15 @@ class MySqlIntegrationTests {
 	@Container
 	static MySQLContainer<?> container = new MySQLContainer<>("mysql:8.4");
 
-	@DynamicPropertySource
+	/*@DynamicPropertySource
     static void setDatasourceProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", container::getJdbcUrl);
         registry.add("spring.datasource.username", container::getUsername);
         registry.add("spring.datasource.password", container::getPassword);
-    }
+    }*/
 
 	@BeforeAll
-	public static void setUp2() {
+	public static void setUp2() throws UnsupportedOperationException, IOException, InterruptedException {
 		//container.start();  // Ensure the container starts
 		System.out.println("$$$ MySQL Container after check");
 		// Verify container is running and log the JDBC URL
@@ -83,13 +85,10 @@ class MySqlIntegrationTests {
 		} else {
 			throw new IllegalStateException("MySQL container failed to start.");
 		}
-	}
+		
+		System.out.println("$$$ AA");
 
-	@Test
-	void checkInitScripts() throws Exception {
-		System.out.println("$$$ AAAA");
-    	// Run a command inside the MySQL container to list the files in the init directory
-    	String[] command = { "ls", "/docker-entrypoint-initdb.d/" };
+		String[] command = { "ls", "/docker-entrypoint-initdb.d/" };
     	ExecResult execResult = container.execInContainer(command);
     
    	 	System.out.println("Files in /docker-entrypoint-initdb.d/:");
@@ -97,6 +96,7 @@ class MySqlIntegrationTests {
 
     	// You can also check if specific files are present
     	assertThat(execResult.getStdout()).contains("02_schema.sql", "03_data.sql");
+
 	}
 
 	@LocalServerPort
