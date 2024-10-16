@@ -17,6 +17,7 @@
 package org.springframework.samples.petclinic.system;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -28,6 +29,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  */
 // Waiting https://github.com/spring-projects/spring-boot/issues/5574 ..good
 // luck ((plain(st) UNIT test)! :)
+@ActiveProfiles("h2")
 class CrashControllerTests {
 
 	CrashController testee = new CrashController();

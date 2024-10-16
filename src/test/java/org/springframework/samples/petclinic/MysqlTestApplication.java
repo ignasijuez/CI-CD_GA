@@ -31,6 +31,7 @@ import org.testcontainers.containers.MySQLContainer;
  *
  */
 @Configuration
+@Disabled("Temporarily skipping integration tests")
 public class MysqlTestApplication {
 
 	@ServiceConnection

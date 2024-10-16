@@ -18,6 +18,7 @@ package org.springframework.samples.petclinic.service;
 
 import org.springframework.orm.ObjectRetrievalFailureException;
 import org.springframework.samples.petclinic.model.BaseEntity;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Collection;
 
@@ -30,6 +31,7 @@ import java.util.Collection;
  * @see org.springframework.samples.petclinic.model.BaseEntity
  * @since 29.10.2003
  */
+@ActiveProfiles("h2")
 public abstract class EntityUtils {
 
 	/**
