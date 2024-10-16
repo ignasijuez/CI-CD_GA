@@ -32,6 +32,8 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.vet.VetRepository;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.aot.DisabledInAotMode;
 import org.springframework.web.client.RestTemplate;
 import org.testcontainers.containers.Container.ExecResult;
@@ -54,6 +56,13 @@ class MySqlIntegrationTests {
 	@ServiceConnection
 	@Container
 	static MySQLContainer<?> container = new MySQLContainer<>("mysql:8.4");
+
+	@DynamicPropertySource
+    static void setDatasourceProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", container::getJdbcUrl);
+        registry.add("spring.datasource.username", container::getUsername);
+        registry.add("spring.datasource.password", container::getPassword);
+    }
 
 	@BeforeAll
 	public static void setUp2() {
@@ -78,6 +87,7 @@ class MySqlIntegrationTests {
 
 	@Test
 	void checkInitScripts() throws Exception {
+		System.out.println("$$$ AAAA");
     	// Run a command inside the MySQL container to list the files in the init directory
     	String[] command = { "ls", "/docker-entrypoint-initdb.d/" };
     	ExecResult execResult = container.execInContainer(command);
