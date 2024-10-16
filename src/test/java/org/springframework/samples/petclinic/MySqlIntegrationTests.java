@@ -55,6 +55,7 @@ class MySqlIntegrationTests {
 		System.out.println("$$$ MySQL Container before check");
 	}
 
+	@SuppressWarnings("resource")
 	@ServiceConnection
 	@Container
 	static MySQLContainer<?> container = new MySQLContainer<>("mysql:8.4").withInitScript("db/mysql2/init.sql");
