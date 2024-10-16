@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledInNativeImage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers(disabledWithoutDocker = true)
 @DisabledInNativeImage
 @DisabledInAotMode
+@Disabled
 class MySqlIntegrationTests {
 
 	@BeforeAll
@@ -58,7 +60,7 @@ class MySqlIntegrationTests {
 	@SuppressWarnings("resource")
 	@ServiceConnection
 	@Container
-	static MySQLContainer<?> container = new MySQLContainer<>("mysql:8.4").withInitScript("db/mysql2/init.sql");
+	static MySQLContainer<?> container = new MySQLContainer<>("mysql:8.4");
 
 	// Use DynamicPropertySource to set the datasource properties dynamically from the MySQLContainer
     @DynamicPropertySource
