@@ -74,8 +74,8 @@ jobs:
     - name: Check MySQL container status
       run: docker inspect --format='{{json .State.Health.Status}}' mysql_db
 
-    - name: Check init files
-      run: docker exec mysql_db ls /docker-entrypoint-initdb.d/
+    #- name: Check init files
+    #  run: docker exec mysql_db ls /docker-entrypoint-initdb.d/
 
     - name: Check MySQL container status
       run: docker inspect --format='{{json .State.Health.Status}}' mysql_db
@@ -94,7 +94,7 @@ jobs:
     - name: Deploy
       run: |
         echo 'Starting App with Docker Compose...'
-        docker compose up --build -d
+        docker compose up -d app
         echo 'Waiting for the application to start...'
         sleep 10
 
