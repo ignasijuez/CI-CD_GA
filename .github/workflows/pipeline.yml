@@ -57,9 +57,9 @@ jobs:
       run: |
         echo $HOME
         ls -la $HOME
-        ls -la $HOME/work/CICD_GA/CICD_GA/github-actions-k8s/actions-runner/
-        ls -la $HOME/work/CICD_GA/CICD_GA/github-actions-k8s/actions-runner/.kube/
-        ls -la $HOME/work/CICD_GA/CICD_GA/github-actions-k8s/actions-runner/.kube/config/
+        ls -la $HOME/work/CICD_GA/CICD_GA/github-actions-k8s/actions-runner
+        ls -la $HOME/work/CICD_GA/CICD_GA/github-actions-k8s/actions-runner/.kube
+        ls -la $HOME/work/CICD_GA/CICD_GA/github-actions-k8s/actions-runner/.kube/config
         cp ~/.kube/config $HOME/.kube/config
 
     - name: Verify Kubernetes Context
