@@ -53,6 +53,9 @@ jobs:
     - name: Log in to DockerHub
       run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
+    - name: Check2
+      run: kubectl config current-context
+
     - name: Build and push Docker image
       run: |
         docker build -t juezignasi/ga-app:latest .
