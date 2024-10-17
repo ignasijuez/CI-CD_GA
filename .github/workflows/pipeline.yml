@@ -53,9 +53,6 @@ jobs:
     - name: Log in to DockerHub
       run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-    - name: Set up Minikube
-      run: minikube start
-
     - name: Set Minikube Context
       run: kubectl config use-context minikube
 
@@ -67,7 +64,10 @@ jobs:
         docker build -t juezignasi/ga-app:latest .
         docker push juezignasi/ga-app:latest
 
-    - name: Deploy MySQL and PetClinic App
+    - name: Deploy MySQL
       run: kubectl apply -f github-actions-k8s/mysql-deployment.yml
-    - name: tas
+    - name: Deploy PetClinic
       run: kubectl apply -f github-actions-k8s/deployment.yml
+
+    - name: Verify Pods
+      run: kubectl get pods -o wide
