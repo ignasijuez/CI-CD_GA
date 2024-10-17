@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petclinic-deployment
+  labels:
+    app: petclinic-ga
+spec:
+  replicas: 2  # Number of application instances (pods)
+  selector:
+    matchLabels:
+      app: petclinic-ga
+  template:
+    metadata:
+      labels:
+        app: petclinic-ga
+    spec:
+      containers:
+      - name: petclinic-app
+        image: <your-dockerhub-username>/petclinic:latest  # Replace with your DockerHub image URL
+        ports:
+        - containerPort: 8088
+        env:
+        - name: MYSQL_URL
+          value: "jdbc:mysql://mysql:3307/petclinic"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "petclinic"
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "petclinic"
