@@ -26,3 +26,18 @@ spec:
           value: "petclinic"
         - name: SPRING_DATASOURCE_PASSWORD
           value: "petclinic"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: petclinic-service
+  labels:
+    app: petclinic-ga
+spec:
+  selector:
+    app: petclinic-ga
+  ports:
+    - protocol: TCP
+      port: 81   # Exposed port
+      targetPort: 8088   # Container's port
+  type: NodePort   # Use ClusterIP if you don't need external access
