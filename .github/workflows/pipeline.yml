@@ -55,7 +55,7 @@ jobs:
 
     - name: Build and push Docker image
       run: |
-        docker build -t juezignasi/ga-app:latest ..
+        docker build -t juezignasi/ga-app:latest ../../
         docker push juezignasi/ga-app:latest
 
     - name: test
