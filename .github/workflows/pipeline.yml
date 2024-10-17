@@ -56,7 +56,8 @@ jobs:
     - name: Copy Kubeconfig
       run: |
         echo $HOME
-        ls $HOME
+        ls -la $HOME
+        ls -la $HOME/work
         cp ~/.kube/config $HOME/.kube/config
 
     - name: Verify Kubernetes Context
