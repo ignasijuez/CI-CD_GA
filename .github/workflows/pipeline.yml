@@ -12,11 +12,6 @@ on:
 jobs:
   setup:
     runs-on: self-hosted
-    services:
-      docker:
-        image: docker:19.03.12
-        options: --privileged
-
     steps:
     - name: Checkout
       uses: actions/checkout@v4 #predefined action from the marketplace
@@ -36,22 +31,13 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    # Ensure Docker is available for Testcontainers
-    - name: Set up Docker
-      run: |
-        sudo systemctl start docker
-
-    - name: Check files
-      run: ls -la
-
     - name: Build
       run: |
         echo 'Clean and package the application'
         mvn spring-javaformat:apply
         mvn clean package #-Dspring.datasource.url=jdbc:mysql://localhost/petclinic
 
-    - name: Log in to DockerHub
-      run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
 
     - name: Create .kube directory
       run: mkdir -p $HOME/.kube
@@ -70,6 +56,11 @@ jobs:
 
     - name: Check2
       run: kubectl cluster-info
+
+
+
+    - name: Log in to DockerHub
+      run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
     - name: Build and push Docker image
       run: |
