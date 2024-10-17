@@ -53,6 +53,12 @@ jobs:
     - name: Log in to DockerHub
       run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
+    - name: Set Kubeconfig Path
+      run: echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV
+
+    - name: Verify Kubernetes Context
+      run: kubectl config get-contexts
+
     - name: Set Minikube Context
       run: kubectl config use-context minikube
 
