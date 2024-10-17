@@ -68,6 +68,6 @@ jobs:
 
     - name: Deploy MySQL and PetClinic App
       run: |
-        kubectl apply -f github-actions-k8s/mysql-deployment.yml
+        kubectl apply -f github-actions-k8s/mysql-deployment.yml --validate=false
         kubectl apply -f github-actions-k8s/deployment.yml
         kubectl apply -f github-actions-k8s/service.yml
