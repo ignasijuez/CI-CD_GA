@@ -54,13 +54,18 @@ jobs:
       run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
     - name: Copy Kubeconfig
-      run: |
-        echo $HOME
-        ls -la $HOME
-        ls -la $HOME/work/CICD_GA/CICD_GA/github-actions-k8s/actions-runner
-        ls -la $HOME/work/CICD_GA/CICD_GA/github-actions-k8s/actions-runner/.kube
-        ls -la $HOME/work/CICD_GA/CICD_GA/github-actions-k8s/actions-runner/.kube/config
-        cp ~/.kube/config $HOME/.kube/config
+      run: echo $HOME
+    - name: asd1
+      run: ls -la $HOME
+    - name: asd2
+      run: ls -la $HOME/work/CICD_GA/CICD_GA/github-actions-k8s/actions-runner
+    - name: asd3
+      run: ls -la $HOME/work/CICD_GA/CICD_GA/github-actions-k8s/actions-runner/.kube
+        
+    - name: asd4
+      run: ls -la $HOME/work/CICD_GA/CICD_GA/github-actions-k8s/actions-runner/.kube/config
+    - name: asd5
+      run: cp ~/.kube/config $HOME/.kube/config
 
     - name: Verify Kubernetes Context
       run: kubectl config get-contexts
