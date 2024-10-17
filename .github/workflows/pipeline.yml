@@ -53,8 +53,8 @@ jobs:
     - name: Log in to DockerHub
       run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-    - name: Set Kubeconfig Path
-      run: echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV
+    - name: Copy Kubeconfig
+      run: cp ~/.kube/config $HOME/.kube/config
 
     - name: Verify Kubernetes Context
       run: kubectl config get-contexts
