@@ -53,11 +53,15 @@ jobs:
     - name: Log in to DockerHub
       run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
+    - name: Set up Minikube
+      run: minikube start
+
+    - name: Set Minikube Context
+      run: kubectl config use-context minikube
+
     - name: Check2
-      run: |
-        kubectl config use-context minikube
-        kubectl cluster-info
-        
+      run: kubectl cluster-info
+
 
     - name: Build and push Docker image
       run: |
