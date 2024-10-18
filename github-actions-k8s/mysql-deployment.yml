@@ -71,5 +71,5 @@ spec:
   ports:
     - port: 3307
   selector:
-    app: mysql
+    app: mysql-ga
   type: ClusterIP
