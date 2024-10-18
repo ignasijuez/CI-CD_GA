@@ -46,4 +46,4 @@ spec:
     - protocol: TCP
       port: 88   # Exposed port
       targetPort: 8088   # Container's port
-  type: NodePort   # Use ClusterIP if you don't need external access
+  type: LoadBalancer
