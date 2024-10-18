@@ -71,7 +71,7 @@ jobs:
     - name: Copy Init Scripts to MySQL
       run: MYSQL_POD=$(kubectl get pod -l app=mysql -o jsonpath="{.items[0].metadata.name}")
     - name: Copy Init Scripts to MySQL2 
-      run: kubectl cp src/main/resources/db/mysql_k8s/. default/$MYSQL_POD:/docker-entrypoint-initdb.d/
+      run: kubectl cp /Users/fish3418/TFG/github_cicd/CICD_test/src/main/resources/db/mysql_k8s/. default/$MYSQL_POD:/docker-entrypoint-initdb.d/
     - name: Copy Init Scripts to MySQL3
       run: echo "Init scripts copied successfully."
 
