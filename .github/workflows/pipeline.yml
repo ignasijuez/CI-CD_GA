@@ -83,6 +83,15 @@ jobs:
       env:
         MYSQL_POD: ${{ env.MYSQL_POD }}
 
+    - name: Execute Init Scripts in MySQL Pod
+      run: |
+        for script in $(kubectl exec $MYSQL_POD -- sh -c 'ls /docker-entrypoint-initdb.d/'); do
+          echo "Executing $script in MySQL pod $MYSQL_POD"
+          kubectl exec $MYSQL_POD -- sh -c "mysql -u root -e 'source /docker-entrypoint-initdb.d/$script'"
+        done
+      env:
+        MYSQL_POD: ${{ env.MYSQL_POD }}
+
     - name: Deploy PetClinic
       run: kubectl apply -f github-actions-k8s/deployment.yml
 
