@@ -36,7 +36,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: petclinic-service
+  name: petclinic-ga
   labels:
     app: petclinic-ga
 spec:
