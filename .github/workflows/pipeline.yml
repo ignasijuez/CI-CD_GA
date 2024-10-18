@@ -60,8 +60,8 @@ jobs:
         docker build -t juezignasi/ga-app:latest .
         docker push juezignasi/ga-app:latest
 
-    - name: Set ConfigMap MySQL
-      run: kubectl apply -f github-actions-k8s/mysql-configmap.yml
+    #- name: Set ConfigMap MySQL
+    #  run: kubectl apply -f github-actions-k8s/mysql-configmap.yml
 
     - name: Deploy MySQL
       run: kubectl apply -f github-actions-k8s/mysql-deployment.yml

@@ -20,7 +20,7 @@ spec:
       - name: mysql-ga
         image: mysql:8.4  # The MySQL version
         ports:
-        - containerPort: 3307
+        - containerPort: 3306
         env:
         - name: MYSQL_ROOT_PASSWORD
           value: ""  # empty password as per docker-compose
@@ -37,9 +37,9 @@ spec:
           mountPath: /var/lib/mysql
         - name: mysql-initdb
           mountPath: /docker-entrypoint-initdb.d
-        - name: mysql-config-volume  # New volume for configuration
-          mountPath: /etc/mysql/my.cnf  # MySQL configuration path
-          subPath: my.cnf  # This ensures we only overwrite the specific file
+        #- name: mysql-config-volume  # New volume for configuration
+        #  mountPath: /etc/mysql/my.cnf  # MySQL configuration path
+        #  subPath: my.cnf  # This ensures we only overwrite the specific file
       volumes:
       - name: mysql-persistent-storage
         persistentVolumeClaim:
@@ -69,7 +69,7 @@ metadata:
     app: mysql-ga
 spec:
   ports:
-    - port: 3307
+    - port: 3306
   selector:
     app: mysql-ga
   type: ClusterIP
