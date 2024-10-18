@@ -40,9 +40,6 @@ jobs:
     - name: home
       run: echo $HOME
 
-    - name: Copy Kubeconfig
-      run: cp ~/.kube/config $HOME/.kube/  # Adjust this path to point to where your kubeconfig file is stored locally on your runner
-
     - name: Set KUBECONFIG Environment Variable
       run: echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV
 
