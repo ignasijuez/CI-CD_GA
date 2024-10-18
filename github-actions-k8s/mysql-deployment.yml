@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql-deployment
+  name: github-mysql-deployment
   labels:
     app: mysql-ga
 spec:
@@ -13,6 +13,8 @@ spec:
     metadata:
       labels:
         app: mysql
+      annotations:
+        pod-name: github-mysql-deployment
     spec:
       containers:
       - name: mysql

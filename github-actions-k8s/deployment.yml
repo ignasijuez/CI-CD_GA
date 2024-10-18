@@ -1,11 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: petclinic-deployment
+  name: github-petclinic-deployment
   labels:
     app: petclinic-ga
 spec:
-  replicas: 2  # Number of application instances (pods)
+  replicas: 1  # Number of application instances (pods)
   selector:
     matchLabels:
       app: petclinic-ga
@@ -13,15 +13,17 @@ spec:
     metadata:
       labels:
         app: petclinic-ga
+      annotations:
+        pod-name: github-petclinic-deployment
     spec:
       containers:
       - name: petclinic-app
-        image: <your-dockerhub-username>/petclinic:latest  # Replace with your DockerHub image URL
+        image: juezignasi/ga-app:latest  # Replace with your DockerHub image URL
         ports:
         - containerPort: 8088
         env:
         - name: MYSQL_URL
-          value: "jdbc:mysql://mysql:3307/petclinic"
+          value: "jdbc:mysql://mysql-ga:3307/petclinic"
         - name: SPRING_DATASOURCE_USERNAME
           value: "petclinic"
         - name: SPRING_DATASOURCE_PASSWORD
@@ -38,6 +40,6 @@ spec:
     app: petclinic-ga
   ports:
     - protocol: TCP
-      port: 81   # Exposed port
+      port: 88   # Exposed port
       targetPort: 8088   # Container's port
   type: NodePort   # Use ClusterIP if you don't need external access
