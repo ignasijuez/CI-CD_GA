@@ -44,6 +44,6 @@ spec:
     app: petclinic-ga
   ports:
     - protocol: TCP
-      port: 88   # Exposed port
+      port: 8088   # Exposed port
       targetPort: 8088   # Container's port
   type: LoadBalancer
