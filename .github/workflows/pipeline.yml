@@ -67,42 +67,6 @@ jobs:
     - name: Wait for MySQL to be Ready
       run: kubectl wait --for=condition=ready pod -l app=mysql-ga --timeout=90s
 
-    # Copy SQL Init Scripts to the MySQL pod
-    - name: acsd
-      run: echo "::set-output name=MYSQL_POD::$(kubectl get pod -l app=mysql-ga -o jsonpath='{.items[0].metadata.name}')"
-    - name: Copy Init Scripts to MySQL
-      run: echo "Detected MySQL pod; ${{ steps.get-mysql-pod.outputs.MYSQL_POD }}"
-    - name: Copy Init Scripts to MySQL1
-      run: echo "Detected MySQL pod $MYSQL_POD"
-    - name: Copy Init Scripts to MySQL2 
-      run: kubectl cp /src/main/resources/db/mysql_k8s/ $MYSQL_POD:/docker-entrypoint-initdb.d/ -n default
-    - name: Copy Init Scripts to MySQL3
-      run: echo "Init scripts copied successfully."
-
-    # Verify that Init Scripts were copied
-    - name: Verify Init Scripts in MySQL Pod
-      run: |
-        MYSQL_POD=$(kubectl get pod -l app=mysql -o jsonpath="{.items[0].metadata.name}")
-        echo "Verifying init scripts in MySQL pod $MYSQL_POD"
-        kubectl exec $MYSQL_POD -- ls -la /docker-entrypoint-initdb.d/
-
-    # Execute the Init Scripts Manually (if needed)
-    - name: Execute Init Scripts in MySQL
-      run: |
-        MYSQL_POD=$(kubectl get pod -l app=mysql -o jsonpath="{.items[0].metadata.name}")
-        echo "Executing init scripts in MySQL pod $MYSQL_POD"
-        for script in $(kubectl exec $MYSQL_POD -- sh -c 'ls /docker-entrypoint-initdb.d/'); do
-          echo "Executing $script in MySQL pod $MYSQL_POD"
-          kubectl exec $MYSQL_POD -- sh -c "mysql -u root < /docker-entrypoint-initdb.d/$script"
-        done
-
-    # Verify that the database is initialized correctly
-    - name: Verify Database Initialization
-      run: |
-        MYSQL_POD=$(kubectl get pod -l app=mysql -o jsonpath="{.items[0].metadata.name}")
-        echo "Verifying database initialization in MySQL pod $MYSQL_POD"
-        kubectl exec $MYSQL_POD -- mysql -u petclinic -p -e "SHOW TABLES IN petclinic;"
-
     - name: Deploy PetClinic
       run: kubectl apply -f github-actions-k8s/deployment.yml
 
