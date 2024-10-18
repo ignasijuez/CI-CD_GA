@@ -24,8 +24,8 @@ spec:
         env:
         - name: MYSQL_URL
           value: "jdbc:mysql://mysql-ga:3307/petclinic"
-        - name: SPRING_DATASOURCE_URL
-          value: "jdbc:mysql://mysql-ga:3307/petclinic"
+#        - name: SPRING_DATASOURCE_URL
+#          value: "jdbc:mysql://mysql-ga:3307/petclinic"
         - name: SPRING_DATASOURCE_USERNAME
           value: "petclinic"
         - name: SPRING_DATASOURCE_PASSWORD
