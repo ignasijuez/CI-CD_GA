@@ -24,10 +24,14 @@ spec:
         env:
         - name: MYSQL_URL
           value: "jdbc:mysql://mysql-ga:3307/petclinic"
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:mysql://mysql-ga:3307/petclinic"
         - name: SPRING_DATASOURCE_USERNAME
           value: "petclinic"
         - name: SPRING_DATASOURCE_PASSWORD
           value: "petclinic"
+        - name: SPRING_JPA_DATABASE_PLATFORM
+          value: "org.hibernate.dialect.MySQLDialect"
 ---
 apiVersion: v1
 kind: Service
