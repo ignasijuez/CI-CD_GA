@@ -68,6 +68,8 @@ jobs:
       run: kubectl wait --for=condition=ready pod -l app=mysql-ga --timeout=90s
 
     # Copy SQL Init Scripts to the MySQL pod
+    - name: acsd
+      run: kubectl get pods -l app=mysql-ga -o wide   # To list all pods with details
     - name: Copy Init Scripts to MySQL
       run: MYSQL_POD=$(kubectl get pod -l app=mysql-ga -o jsonpath="{.items[0].metadata.name}")
     - name: Copy Init Scripts to MySQL1
