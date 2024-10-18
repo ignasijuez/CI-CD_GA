@@ -51,6 +51,7 @@ jobs:
 
     - name: Check2
       run: kubectl cluster-info
+      
 
     - name: Log in to DockerHub
       run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
