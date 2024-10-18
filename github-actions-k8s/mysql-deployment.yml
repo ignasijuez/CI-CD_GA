@@ -8,16 +8,16 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysql
+      app: mysql-ga
   template:
     metadata:
       labels:
-        app: mysql
+        app: mysql-ga
       annotations:
         pod-name: github-mysql-deployment
     spec:
       containers:
-      - name: mysql
+      - name: mysql-ga
         image: mysql:8.4  # The MySQL version
         ports:
         - containerPort: 3307
