@@ -37,8 +37,8 @@ jobs:
         mvn spring-javaformat:apply
         mvn clean package #-Dspring.datasource.url=jdbc:mysql://localhost/petclinic
 
-
-
+    - name: home
+      run: echo $HOME
     - name: Create .kube directory
       run: mkdir -p $HOME/.kube
 
