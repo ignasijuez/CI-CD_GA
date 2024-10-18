@@ -42,7 +42,9 @@ spec:
         persistentVolumeClaim:
           claimName: mysql-pvc-ga
       - name: mysql-initdb
-        emptyDir: {}
+        hostPath:
+          path: /Users/fish3418/TFG/github_cicd/CICD_test/src/main/resources/db/mysql_k8s
+          type: Directory
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
