@@ -20,7 +20,7 @@ spec:
       - name: petclinic-app
         image: juezignasi/ga-app:latest  # Replace with your DockerHub image URL
         ports:
-        - containerPort: 8090
+        - containerPort: 8080
         env:
         - name: MYSQL_URL
           value: "jdbc:mysql://mysql-ga:3307/petclinic"
@@ -45,5 +45,6 @@ spec:
   ports:
     - protocol: TCP
       port: 8090   # Exposed port
-      targetPort: 8090   # Container's port
-  type: LoadBalancer
+      targetPort: 8080   # Container's port
+      nodePort: 30008
+  type: NodePort
