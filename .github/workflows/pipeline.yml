@@ -97,3 +97,4 @@ jobs:
 
     - name: Verify Pods
       run: kubectl get pods -o wide
+
