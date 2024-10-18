@@ -63,6 +63,15 @@ jobs:
     - name: Deploy MySQL
       run: kubectl apply -f github-actions-k8s/mysql-deployment.yml
 
+    - name: Wait for MySQL Pod to be Ready
+      run: |
+        MYSQL_POD=$(kubectl get pod -l app=mysql-ga -o jsonpath="{.items[0].metadata.name}")
+        while [[ $(kubectl get pod $MYSQL_POD -o jsonpath="{.status.phase}") != "Running" ]]; do
+          echo "Waiting for MySQL pod to be ready..."
+          sleep 5
+        done
+        echo "MySQL pod is ready!"
+
     - name: Get MySQL Pod Name
       run: |
         MYSQL_POD=$(kubectl get pod -l app=mysql-ga -o jsonpath="{.items[0].metadata.name}")
