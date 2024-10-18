@@ -101,6 +101,9 @@ jobs:
       env:
         MYSQL_POD: ${{ env.MYSQL_POD }}
 
+    - name: Set ConfigMap MySQL
+      run: kubectl apply -f github-actions-k8s/mysql-configmap.yml
+
     - name: Deploy PetClinic
       run: kubectl apply -f github-actions-k8s/deployment.yml
 

@@ -37,12 +37,18 @@ spec:
           mountPath: /var/lib/mysql
         - name: mysql-initdb
           mountPath: /docker-entrypoint-initdb.d
+        - name: mysql-config-volume  # New volume for configuration
+          mountPath: /etc/mysql/my.cnf  # MySQL configuration path
+          subPath: my.cnf  # This ensures we only overwrite the specific file
       volumes:
       - name: mysql-persistent-storage
         persistentVolumeClaim:
           claimName: mysql-pvc-ga
       - name: mysql-initdb
         emptyDir: {}
+      - name: mysql-config-volume  # Define the volume for the ConfigMap
+        configMap:
+          name: mysql-config  # Reference the ConfigMap we created earlier
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
