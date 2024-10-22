@@ -43,6 +43,6 @@ spec:
   ports:
     - protocol: TCP
       port: 8090   # Exposed port
-      targetPort: 8080   # Container's port aaa
+      targetPort: 8080   # Container's port
       nodePort: 30008
   type: NodePort
