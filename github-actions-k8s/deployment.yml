@@ -46,3 +46,4 @@ spec:
       targetPort: 8080   # Container's port
       nodePort: 30008
   type: NodePort
+  
