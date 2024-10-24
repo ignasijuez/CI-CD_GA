@@ -46,9 +46,9 @@ spec:
           claimName: mysql-pvc-ga
       - name: mysql-initdb
         emptyDir: {}
-      #- name: mysql-config-volume  # Define the volume for the ConfigMap
-      #  configMap:
-      #    name: mysql-config  # Reference the ConfigMap we created earlier
+      - name: mysql-config-volume  # Define the volume for the ConfigMap
+        configMap:
+          name: mysql-config  # Reference the ConfigMap we created earlier
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
