@@ -14,7 +14,7 @@ spec:
       labels:
         app: github-mysql-pod
       annotations:
-        pod-name: github-mysql-deployment
+        pod-name: github-mysql-pod
     spec:
       containers:
       - name: github-mysql-pod

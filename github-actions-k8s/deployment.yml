@@ -14,7 +14,7 @@ spec:
       labels:
         app: github-petclinic-pod
       annotations:
-        pod-name: github-petclinic-deployment
+        pod-name: github-petclinic-pod
     spec:
       containers:
       - name: petclinic-app
