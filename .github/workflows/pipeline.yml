@@ -35,7 +35,7 @@ jobs:
       run: |
         echo 'Clean and package the application'
         mvn spring-javaformat:apply
-        mvn clean package #-Dspring.datasource.url=jdbc:mysql://localhost/petclinic
+        mvn clean package
 
     - name: home
       run: echo $HOME
@@ -68,7 +68,7 @@ jobs:
 
     - name: Wait for MySQL Pod to be Ready
       run: |
-        MYSQL_POD=$(kubectl get pod -l app=mysql-ga -o jsonpath="{.items[0].metadata.name}")
+        MYSQL_POD=$(kubectl get pod -l app=github-mysql-pod -o jsonpath="{.items[0].metadata.name}")
         while [[ $(kubectl get pod $MYSQL_POD -o jsonpath="{.status.phase}") != "Running" ]]; do
           echo "Waiting for MySQL pod to be ready..."
           sleep 5
@@ -77,7 +77,7 @@ jobs:
 
     - name: Get MySQL Pod Name
       run: |
-        MYSQL_POD=$(kubectl get pod -l app=mysql-ga -o jsonpath="{.items[0].metadata.name}")
+        MYSQL_POD=$(kubectl get pod -l app=github-mysql-pod -o jsonpath="{.items[0].metadata.name}")
         echo "MYSQL_POD=$MYSQL_POD" >> $GITHUB_ENV
 
     - name: Output MySQL Pod Name

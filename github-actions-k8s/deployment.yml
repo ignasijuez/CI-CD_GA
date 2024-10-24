@@ -3,16 +3,16 @@ kind: Deployment
 metadata:
   name: github-petclinic-deployment
   labels:
-    app: petclinic-ga
+    app: github-petclinic-pod
 spec:
   replicas: 1  # Number of application instances (pods)
   selector:
     matchLabels:
-      app: petclinic-ga
+      app: github-petclinic-pod
   template:
     metadata:
       labels:
-        app: petclinic-ga
+        app: github-petclinic-pod
       annotations:
         pod-name: github-petclinic-deployment
     spec:
@@ -23,7 +23,7 @@ spec:
         - containerPort: 8080
         env:
         - name: MYSQL_URL
-          value: "jdbc:mysql://mysql-ga:3306/petclinic"
+          value: "jdbc:mysql://github-mysql-service:3306/petclinic"
         - name: SPRING_DATASOURCE_USERNAME
           value: "petclinic"
         - name: SPRING_DATASOURCE_PASSWORD
@@ -34,12 +34,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: petclinic-ga
+  name: github-petclinic-service
   labels:
-    app: petclinic-ga
+    app: github-petclinic-pod
 spec:
   selector:
-    app: petclinic-ga
+    app: github-petclinic-pod
   ports:
     - protocol: TCP
       port: 8090   # Exposed port

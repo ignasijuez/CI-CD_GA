@@ -3,21 +3,21 @@ kind: Deployment
 metadata:
   name: github-mysql-deployment
   labels:
-    app: mysql-ga
+    app: github-mysql-pod
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysql-ga
+      app: github-mysql-pod
   template:
     metadata:
       labels:
-        app: mysql-ga
+        app: github-mysql-pod
       annotations:
         pod-name: github-mysql-deployment
     spec:
       containers:
-      - name: mysql-ga
+      - name: github-mysql-pod
         image: mysql:8.4  # The MySQL version
         ports:
         - containerPort: 3306
@@ -64,12 +64,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql-ga
+  name: github-mysql-service
   labels:
-    app: mysql-ga
+    app: github-mysql-pod
 spec:
   ports:
     - port: 3306
   selector:
-    app: mysql-ga
+    app: github-mysql-pod
   type: ClusterIP
