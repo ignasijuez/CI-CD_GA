@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: github-mysql-deployment
   labels:
-    app: github-mysql-pod
+    app: github-mysql-deployment
 spec:
   replicas: 1
   selector:
@@ -66,11 +66,10 @@ kind: Service
 metadata:
   name: github-mysql-service
   labels:
-    app: github-mysql-pod
+    app: github-mysql-service
 spec:
   ports:
     - port: 3306
   selector:
     app: github-mysql-pod
   type: ClusterIP
-  

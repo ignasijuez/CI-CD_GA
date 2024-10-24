@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: github-petclinic-deployment
   labels:
-    app: github-petclinic-pod
+    app: github-petclinic-deployment
 spec:
   replicas: 1  # Number of application instances (pods)
   selector:
@@ -36,7 +36,7 @@ kind: Service
 metadata:
   name: github-petclinic-service
   labels:
-    app: github-petclinic-pod
+    app: github-petclinic-service
 spec:
   selector:
     app: github-petclinic-pod
