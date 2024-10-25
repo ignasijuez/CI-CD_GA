@@ -48,7 +48,7 @@ jobs:
 
   setup2:
     runs-on: self-hosted
-    needs: build
+    needs: setup
     steps:
       - name: home
         run: echo $HOME
@@ -67,14 +67,14 @@ jobs:
 
   docker-login:
     runs-on: self-hosted
-    needs: setup2
+    needs: setup
     steps:
       - name: Log in to DockerHub
         run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
   docker-build-push:
     runs-on: self-hosted
-    needs: docker-login
+    needs: [build, docker-login]
     steps:
       - name: Build and push Docker image
         run: |
@@ -86,7 +86,7 @@ jobs:
 
   deploy-mysql:
     runs-on: self-hosted
-    needs: docker-build-push
+    needs: [setup2, docker-build-push]
     steps:
       - name: Deploy MySQL
         run: kubectl apply -f github-actions-k8s/mysql-deployment.yml
