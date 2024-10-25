@@ -10,105 +10,132 @@ on:
     branches: [ "main" ]
 
 jobs:
-  setup:
+  checkout: 
     runs-on: self-hosted
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4 #predefined action from the marketplace
+      - name: checkout
+        uses: actions/checkout@v4 #predefined action from the marketplace
+  
+  setup:
+    runs-on: self-hosted
+    needs: checkout
+    steps:
+      # Cache Maven dependencies
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
 
-    # Cache Maven dependencies
-    - name: Cache Maven packages
-      uses: actions/cache@v2
-      with:
-        path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-maven-
+      - name: Set up JDK 17 & Maven
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-    - name: Set up JDK 17 & Maven
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+  build:
+      runs-on: self-hosted
+      needs: setup
+      steps:
 
-    - name: Build
-      run: |
-        echo 'Clean and package the application'
-        mvn spring-javaformat:apply
-        mvn clean package
+      - name: Build
+        run: |
+          echo 'Clean and package the application'
+          mvn spring-javaformat:apply
+          mvn clean package
 
-    - name: home
-      run: echo $HOME
+  setup2:
+    runs-on: self-hosted
+    needs: build
+    steps:
+      - name: home
+        run: echo $HOME
 
-    - name: Set KUBECONFIG Environment Variable
-      run: echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV
+      - name: Set KUBECONFIG Environment Variable
+        run: echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV
 
-    - name: Verify Kubernetes Context
-      run: kubectl config get-contexts
+      - name: Verify Kubernetes Context
+        run: kubectl config get-contexts
 
-    - name: Set Minikube Context
-      run: kubectl config use-context minikube
+      - name: Set Minikube Context
+        run: kubectl config use-context minikube
 
-    - name: Check2
-      run: kubectl cluster-info
+      - name: Check2
+        run: kubectl cluster-info
 
-    - name: Log in to DockerHub
-      run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+  docker-login:
+    runs-on: self-hosted
+    needs: setup2
+    steps:
+      - name: Log in to DockerHub
+        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-    - name: Build and push Docker image
-      run: |
-        docker build -t juezignasi/ga-app:latest .
-        docker push juezignasi/ga-app:latest
+  docker-build-push:
+    runs-on: self-hosted
+    needs: docker-login
+    steps:
+      - name: Build and push Docker image
+        run: |
+          docker build -t juezignasi/ga-app:latest .
+          docker push juezignasi/ga-app:latest
 
     #- name: Set ConfigMap MySQL
     #  run: kubectl apply -f github-actions-k8s/mysql-configmap.yml
 
-    - name: Deploy MySQL
-      run: kubectl apply -f github-actions-k8s/mysql-deployment.yml
+  deploy-mysql:
+    runs-on: self-hosted
+    needs: docker-build-push
+    steps:
+      - name: Deploy MySQL
+        run: kubectl apply -f github-actions-k8s/mysql-deployment.yml
 
-    - name: Wait for MySQL Pod to be Ready
-      run: |
-        MYSQL_POD=$(kubectl get pod -l app=github-mysql-pod -o jsonpath="{.items[0].metadata.name}")
-        while [[ $(kubectl get pod $MYSQL_POD -o jsonpath="{.status.phase}") != "Running" ]]; do
-          echo "Waiting for MySQL pod to be ready..."
-          sleep 5
-        done
-        echo "MySQL pod is ready!"
+      - name: Wait for MySQL Pod to be Ready
+        run: |
+          MYSQL_POD=$(kubectl get pod -l app=github-mysql-pod -o jsonpath="{.items[0].metadata.name}")
+          while [[ $(kubectl get pod $MYSQL_POD -o jsonpath="{.status.phase}") != "Running" ]]; do
+            echo "Waiting for MySQL pod to be ready..."
+            sleep 5
+          done
+          echo "MySQL pod is ready!"
 
-    - name: Get MySQL Pod Name
-      run: |
-        MYSQL_POD=$(kubectl get pod -l app=github-mysql-pod -o jsonpath="{.items[0].metadata.name}")
-        echo "MYSQL_POD=$MYSQL_POD" >> $GITHUB_ENV
+      - name: Get MySQL Pod Name
+        run: |
+          MYSQL_POD=$(kubectl get pod -l app=github-mysql-pod -o jsonpath="{.items[0].metadata.name}")
+          echo "MYSQL_POD=$MYSQL_POD" >> $GITHUB_ENV
 
-    - name: Output MySQL Pod Name
-      run: echo $MYSQL_POD
+      - name: Output MySQL Pod Name
+        run: echo $MYSQL_POD
 
-    - name: Copy Init Scripts to MySQL Pod
-      run: |
-        kubectl cp ./src/main/resources/db/mysql_k8s/. $MYSQL_POD:/docker-entrypoint-initdb.d/
-      env:
-        MYSQL_POD: ${{ env.MYSQL_POD }}
+      - name: Copy Init Scripts to MySQL Pod
+        run: |
+          kubectl cp ./src/main/resources/db/mysql_k8s/. $MYSQL_POD:/docker-entrypoint-initdb.d/
+        env:
+          MYSQL_POD: ${{ env.MYSQL_POD }}
 
-    - name: Verify Init Scripts in MySQL Pod
-      run: |
-        kubectl exec $MYSQL_POD -- ls -la /docker-entrypoint-initdb.d/
-      env:
-        MYSQL_POD: ${{ env.MYSQL_POD }}
+      - name: Verify Init Scripts in MySQL Pod
+        run: |
+          kubectl exec $MYSQL_POD -- ls -la /docker-entrypoint-initdb.d/
+        env:
+          MYSQL_POD: ${{ env.MYSQL_POD }}
 
-    - name: Execute Init Scripts in MySQL Pod
-      run: |
-        for script in $(kubectl exec $MYSQL_POD -- sh -c 'ls /docker-entrypoint-initdb.d/'); do
-          echo "Executing $script in MySQL pod $MYSQL_POD"
-          kubectl exec $MYSQL_POD -- sh -c "mysql -u root -e 'source /docker-entrypoint-initdb.d/$script'"
-        done
-      env:
-        MYSQL_POD: ${{ env.MYSQL_POD }}
+      - name: Execute Init Scripts in MySQL Pod
+        run: |
+          for script in $(kubectl exec $MYSQL_POD -- sh -c 'ls /docker-entrypoint-initdb.d/'); do
+            echo "Executing $script in MySQL pod $MYSQL_POD"
+            kubectl exec $MYSQL_POD -- sh -c "mysql -u root -e 'source /docker-entrypoint-initdb.d/$script'"
+          done
+        env:
+          MYSQL_POD: ${{ env.MYSQL_POD }}
 
-    
+  deploy-app:
+    runs-on: self-hosted
+    needs: deploy-mysql
+    steps:  
+      - name: Deploy PetClinic
+        run: kubectl apply -f github-actions-k8s/deployment.yml
 
-    - name: Deploy PetClinic
-      run: kubectl apply -f github-actions-k8s/deployment.yml
-
-    - name: Verify Pods
-      run: kubectl get pods -o wide
+      - name: Verify Pods
+        run: kubectl get pods -o wide
 
