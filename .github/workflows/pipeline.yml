@@ -19,6 +19,7 @@ jobs:
           currentHour=$(date +%H)
           echo "hour=$currentHour" >> $GITHUB_ENV
           echo "La hora actual es: $currentHour"
+          echo "La hora2 actual es: env.hour"
 
       - name: Fail if inside time range
         if: ${{ env.hour >= 2 || env.hour < 3 }}
