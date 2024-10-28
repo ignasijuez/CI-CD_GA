@@ -13,16 +13,13 @@ jobs:
   checkout: 
     runs-on: self-hosted
     steps:
-      - name: Check hour
-        id: check_time
+      - name: Check hour and fail if inside time range
         run: |
           currentHour=$(date +%H)
-
-      - name: Fail if inside time range
-        if: ${{ env.hour >= 2 && env.hour < 3 }}
-        run: |
-          echo "El pipeline se termina porque no es la hora adecuada"
-          exit 1
+          if [ "$currentHour" -ge 2 ] && [ "$currentHour" -lt 3 ]; then
+            echo "El pipeline se termina porque no es la hora adecuada"
+            exit 1
+          fi
 
       - name: checkout
         uses: actions/checkout@v4 #predefined action from the marketplace
@@ -61,20 +58,26 @@ jobs:
     runs-on: self-hosted
     needs: setup
     steps:
-      - name: home
-        run: echo $HOME
-
-      - name: Set KUBECONFIG Environment Variable
-        run: echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV
-
-      - name: Verify Kubernetes Context
-        run: kubectl config get-contexts
-
-      - name: Set Minikube Context
+      - name: Set up Kubernetes and verify context
+        env:
+          KUBECONFIG: ${{ secrets.KUBECONFIG }}
         run: kubectl config use-context minikube
 
-      - name: Check2
-        run: kubectl cluster-info
+
+      #- name: home
+      #  run: echo $HOME
+
+      #- name: Set KUBECONFIG Environment Variable
+      #  run: echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV
+
+      #- name: Verify Kubernetes Context
+      #  run: kubectl config get-contexts
+
+      #- name: Set Minikube Context
+      #  run: kubectl config use-context minikube
+
+      #- name: Check2
+      #  run: kubectl cluster-info
 
   docker-login:
     runs-on: self-hosted
