@@ -21,6 +21,10 @@ jobs:
           echo "La hora actual es: $currentHour"
           echo "El valor de env.hour es: ${{ env.hour }}"
 
+      - name: Echo env.hour
+        run: |
+          echo "El valor de env.hour es: ${{ env.hour }}"
+
       - name: Fail if inside time range
         if: ${{ env.hour >= 2 || env.hour < 3 }}
         run: |
