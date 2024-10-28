@@ -58,26 +58,20 @@ jobs:
     runs-on: self-hosted
     needs: setup
     steps:
-      - name: Set up Kubernetes and verify context
-        env:
-          KUBECONFIG: ${{ secrets.KUBECONFIG }}
+      - name: home
+        run: echo $HOME
+
+      - name: Set KUBECONFIG Environment Variable
+        run: echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV
+
+      - name: Verify Kubernetes Context
+        run: kubectl config get-contexts
+
+      - name: Set Minikube Context
         run: kubectl config use-context minikube
 
-
-      #- name: home
-      #  run: echo $HOME
-
-      #- name: Set KUBECONFIG Environment Variable
-      #  run: echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV
-
-      #- name: Verify Kubernetes Context
-      #  run: kubectl config get-contexts
-
-      #- name: Set Minikube Context
-      #  run: kubectl config use-context minikube
-
-      #- name: Check2
-      #  run: kubectl cluster-info
+      - name: Check2
+        run: kubectl cluster-info
 
   docker-login:
     runs-on: self-hosted
@@ -86,17 +80,25 @@ jobs:
       - name: Log in to DockerHub
         run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
+  #docker-build-push:
+  #  runs-on: self-hosted
+  #  needs: [build, docker-login]
+  #  steps:
+  #    - name: Build and push Docker image
+  #      run: |
+  #        docker build -t juezignasi/ga-app:latest .
+  #        docker push juezignasi/ga-app:latest
+
   docker-build-push:
     runs-on: self-hosted
     needs: [build, docker-login]
     steps:
       - name: Build and push Docker image
-        run: |
-          docker build -t juezignasi/ga-app:latest .
-          docker push juezignasi/ga-app:latest
-
-    #- name: Set ConfigMap MySQL
-    #  run: kubectl apply -f github-actions-k8s/mysql-configmap.yml
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: juezignasi/ga-app:latest
 
   deploy-mysql:
     runs-on: self-hosted
@@ -105,22 +107,25 @@ jobs:
       - name: Deploy MySQL
         run: kubectl apply -f github-actions-k8s/mysql-deployment.yml
 
-      - name: Wait for MySQL Pod to be Ready
-        run: |
-          MYSQL_POD=$(kubectl get pod -l app=github-mysql-pod -o jsonpath="{.items[0].metadata.name}")
-          while [[ $(kubectl get pod $MYSQL_POD -o jsonpath="{.status.phase}") != "Running" ]]; do
-            echo "Waiting for MySQL pod to be ready..."
-            sleep 5
-          done
-          echo "MySQL pod is ready!"
-
       - name: Get MySQL Pod Name
         run: |
           MYSQL_POD=$(kubectl get pod -l app=github-mysql-pod -o jsonpath="{.items[0].metadata.name}")
           echo "MYSQL_POD=$MYSQL_POD" >> $GITHUB_ENV
 
+      - name: Wait for MySQL Pod to be Ready
+        run: |
+          while [[ $(kubectl get pod $MYSQL_POD -o jsonpath="{.status.phase}") != "Running" ]]; do
+            echo "Waiting for MySQL pod to be ready..."
+            sleep 5
+          done
+          echo "MySQL pod is ready!"
+        env:
+          MYSQL_POD: ${{ env.MYSQL_POD }}
+
       - name: Output MySQL Pod Name
         run: echo $MYSQL_POD
+        env:
+          MYSQL_POD: ${{ env.MYSQL_POD }}
 
       - name: Copy Init Scripts to MySQL Pod
         run: |
