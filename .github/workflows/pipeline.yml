@@ -110,15 +110,15 @@ jobs:
     runs-on: self-hosted
     needs: [build, docker-login]
     steps:
-      - name: Verify DOCKER_IMAGE value
-        run: echo "DOCKER_IMAGE is set to ${{ inputs.DOCKER_IMAGE }}"
+      #- name: Verify DOCKER_IMAGE value
+      #  run: echo "DOCKER_IMAGE is set to ${{ inputs.DOCKER_IMAGE }}"
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: ${{ inputs.DOCKER_IMAGE }}
+          tags: juezignasi/ga-app:latest
 
   deploy-mysql:
     runs-on: self-hosted
