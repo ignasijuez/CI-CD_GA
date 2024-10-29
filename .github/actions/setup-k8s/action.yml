@@ -6,7 +6,12 @@ runs:
   steps:
     - name: Set KUBECONFIG Environment Variable
       run: echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV
+      shell: bash
+
     - name: Verify Kubernetes Context
       run: kubectl config get-contexts
+      shell: bash
+
     - name: Set Minikube Context
       run: kubectl config use-context minikube
+      shell: bash
