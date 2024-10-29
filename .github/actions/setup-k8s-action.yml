@@ -1,0 +1,12 @@
+name: "Setup Kubernetes"
+description: "Configure Kubernetes context and set up environment variables"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set KUBECONFIG Environment Variable
+      run: echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV
+    - name: Verify Kubernetes Context
+      run: kubectl config get-contexts
+    - name: Set Minikube Context
+      run: kubectl config use-context minikube
