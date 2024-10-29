@@ -80,8 +80,8 @@ jobs:
           echo $HOME
           ls -la
 
-      #- name: Setup Kubernetes
-      #  uses: ./.github/actions/setup-k8s-action.yml
+      - name: Setup Kubernetes
+        uses: ./.github/actions/setup-k8s-action.yml
 
       - name: Set KUBECONFIG Environment Variable
         run: echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV
