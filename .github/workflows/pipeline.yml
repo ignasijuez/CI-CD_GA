@@ -76,7 +76,9 @@ jobs:
     needs: setup
     steps:
       - name: home
-        run: echo $HOME
+        run: |
+          echo $HOME
+          ls -la
 
       #- name: Setup Kubernetes
       #  uses: ./.github/actions/setup-k8s-action.yml
