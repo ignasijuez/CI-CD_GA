@@ -8,6 +8,20 @@ on:
     #when someone pushes to branch main it triggers this workflow
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
+    inputs:
+      REPO_URL:
+        description: 'URL del repositorio'
+        default: 'https://github.com/ignasijuez/CICD_GA.git'
+        required: true
+      BRANCH:
+        description: 'Branch a clonar'
+        default: 'main'
+        required: true
+      DOCKER_IMAGE:
+        description: 'Nombre de la imagen de Docker'
+        default: 'juezignasi/ga-app:latest'
+        required: true
 
 jobs:
   checkout: 
@@ -23,6 +37,9 @@ jobs:
 
       - name: checkout
         uses: actions/checkout@v4 #predefined action from the marketplace
+        with: 
+          repository: ${{ github.event.inputs.REPO_URL }}
+          ref: ${{ github.event.inputs.BRANCH }}
   
   setup:
     runs-on: self-hosted
