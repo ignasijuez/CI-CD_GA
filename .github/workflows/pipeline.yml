@@ -38,8 +38,8 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4 #predefined action from the marketplace
         with: 
-          repository: ${{ github.event.inputs.REPO_URL }}
-          ref: ${{ github.event.inputs.BRANCH }}
+          repository: ${{ inputs.REPO_URL }}
+          ref: ${{ inputs.BRANCH }}
   
   setup:
     runs-on: self-hosted
@@ -111,14 +111,14 @@ jobs:
     needs: [build, docker-login]
     steps:
       - name: Verify DOCKER_IMAGE value
-        run: echo "DOCKER_IMAGE is set to ${{ github.event.inputs.DOCKER_IMAGE }}"
+        run: echo "DOCKER_IMAGE is set to ${{ inputs.DOCKER_IMAGE }}"
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: juezignasi/ga-app:latest
+          tags: ${{ inputs.DOCKER_IMAGE }}
 
   deploy-mysql:
     runs-on: self-hosted
