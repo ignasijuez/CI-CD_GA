@@ -20,7 +20,7 @@ on:
         required: true
       DOCKER_IMAGE:
         description: 'Nombre de la imagen de Docker'
-        default: 'juezignasi/ga-app'
+        default: 'juezignasi/ga-app:latest'
         required: true
 
 jobs:
@@ -115,7 +115,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: juezignasi/ga-app:latest
+          tags: ${{ github.event.inputs.DOCKER_IMAGE }}
 
   deploy-mysql:
     runs-on: self-hosted
