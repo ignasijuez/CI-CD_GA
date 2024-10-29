@@ -78,20 +78,20 @@ jobs:
       - name: home
         run: echo $HOME
 
-      - name: Setup Kubernetes
-        uses: ./.github/actions/setup-k8s-action.yml
+      #- name: Setup Kubernetes
+      #  uses: ./.github/actions/setup-k8s-action.yml
 
-      #- name: Set KUBECONFIG Environment Variable
-      #  run: echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV
+      - name: Set KUBECONFIG Environment Variable
+        run: echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV
 
-      #- name: Verify Kubernetes Context
-      #  run: kubectl config get-contexts
+      - name: Verify Kubernetes Context
+        run: kubectl config get-contexts
 
-      #- name: Set Minikube Context
-      #  run: kubectl config use-context minikube
+      - name: Set Minikube Context
+        run: kubectl config use-context minikube
 
-      #- name: Check2
-      #  run: kubectl cluster-info
+      - name: Check2
+        run: kubectl cluster-info
 
   docker-login:
     runs-on: self-hosted
