@@ -19,7 +19,7 @@ on:
         required: true
 
 jobs:
-  build-and-publish:
+  login:
     runs-on: ubuntu-latest
     steps:
       - name: Log in to DockerHub
