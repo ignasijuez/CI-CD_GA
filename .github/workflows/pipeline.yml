@@ -39,7 +39,16 @@ jobs:
         with: 
           repository: ${{ inputs.REPO_URL }}
           ref: ${{ inputs.BRANCH }}
-  
+
+      - name: HTTP Request on Success
+        if: success()
+        uses: github-actions-x/http-client-action@v1
+        with:
+          url: https://httpbin.org/post
+          method: POST
+          headers: '{"Content-Type":"application/json"}'
+          data: '{"job": "checkout", "status": "Success", "details": "Checkout completed successfully"}'
+
   setup:
     runs-on: self-hosted
     needs: checkout
