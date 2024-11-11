@@ -42,7 +42,7 @@ jobs:
 
       - name: HTTP Request on Success
         if: success()
-        uses: github-actions-x/http-client-action@v1
+        uses: julianoales/http-client-action@master
         with:
           url: https://httpbin.org/post
           method: POST
