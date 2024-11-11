@@ -53,11 +53,7 @@ jobs:
               "status": "Success",
               "details": "Checkout completed successfully"
             }
-
-      - name: Log Response on Success
-        if: success()
-        run: |
-          echo "Response: ${{ steps.notify_success.outputs.response }}"
+          maskResponse: false  # Asegura que la respuesta se muestre en los logs
       
       - name: HTTP Request on Failure
         if: failure()
