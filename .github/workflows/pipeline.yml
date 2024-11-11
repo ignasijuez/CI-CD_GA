@@ -53,7 +53,7 @@ jobs:
               "status": "Success",
               "details": "Checkout completed successfully"
             }
-          maskResponse: false  # Asegura que la respuesta se muestre en los logs
+          maskResponse: true  # Asegura que la respuesta se muestre en los logs
       
       - name: HTTP Request on Failure
         if: failure()
