@@ -37,7 +37,8 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4 #predefined action from the marketplace
         with: 
-          repository: ${{ inputs.REPO_URL }}
+          #repository: ${{ inputs.REPO_URL }}
+          repository: 'https://github.com/ignasijuez/CIsCD_GA.git'
           ref: ${{ inputs.BRANCH }}
 
       - name: HTTP Request on Success
@@ -53,17 +54,15 @@ jobs:
       
       - name: HTTP Request on Failure
         if: failure()
-        uses: fjogeleit/http-request-action@v1
-        with:
-          url: 'https://httpbin.org/post'
-          method: 'POST'
-          customHeaders: '{"Content-Type": "application/json"}'
-          data: |
-            {
-              "job": "checkout",
-              "status": "Failed",
-              "details": "Checkout failed. Error in step: ${{ steps.checkout_step.outcome }}"
-            }
+        run: |
+          ERROR_MESSAGE="Checkout failed. Error in step: ${{ steps.checkout_step.outcome }}"
+          curl -X POST https://httpbin.org/post \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"job\": \"checkout\",
+              \"status\": \"Failed\",
+              \"details\": \"${ERROR_MESSAGE}\"
+            }"
 
   setup:
     runs-on: self-hosted
