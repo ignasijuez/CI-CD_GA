@@ -42,12 +42,17 @@ jobs:
 
       - name: HTTP Request on Success
         if: success()
-        uses: julianoales/http-client-action@master
+        uses: fjogeleit/http-request-action@v1
         with:
-          url: https://httpbin.org/post
-          method: POST
-          headers: '{"Content-Type":"application/json"}'
-          data: '{"job": "checkout", "status": "Success", "details": "Checkout completed successfully"}'
+          url: 'https://httpbin.org/post'
+          method: 'POST'
+          customHeaders: '{"Content-Type": "application/json"}'
+          data: |
+            {
+              "job": "checkout",
+              "status": "Success",
+              "details": "Checkout completed successfully"
+            }
 
   setup:
     runs-on: self-hosted
