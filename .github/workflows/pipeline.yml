@@ -37,8 +37,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4 #predefined action from the marketplace
         with: 
-          #repository: ${{ inputs.REPO_URL }}
-          repository: 'https://github.com/ignasijuez/CIsCD_GA.git'
+          repository: ${{ inputs.REPO_URL }}
           ref: ${{ inputs.BRANCH }}
 
       - name: HTTP Request on Success
