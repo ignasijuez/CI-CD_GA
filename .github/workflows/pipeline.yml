@@ -100,17 +100,22 @@ jobs:
       #    mvn clean package
   
       - name: Build Application
+        id: build_step
         run: |
-          BUILD_OUTPUT=$(mvn spring-javaformat:apply && mvn clean package 2>&1) || echo "$BUILD_OUTPUT" > build_error.log
+          BUILD_OUTPUT=$(mvn spring-javaformat:apply && mvn clean package 2>&1) || { echo "$BUILD_OUTPUT" > build_error.log; exit 1; }
         continue-on-error: true
 
       - name: Capture Build Result
-        if: failure()
+        if: always()  # Se ejecuta siempre para capturar el estado del build
         run: |
-          ERROR_MESSAGE=$(<build_error.log)
-          echo "BUILD_STATUS=Failed" >> $GITHUB_ENV
-          echo "BUILD_ERROR=${ERROR_MESSAGE}" >> $GITHUB_ENV
-          exit 1
+          if [[ "${{ steps.build_step.outcome }}" == "success" ]]; then
+            echo "BUILD_STATUS=Success" >> $GITHUB_ENV
+          else
+            ERROR_MESSAGE=$(<build_error.log)
+            echo "BUILD_STATUS=Failed" >> $GITHUB_ENV
+            echo "BUILD_ERROR=${ERROR_MESSAGE}" >> $GITHUB_ENV
+            exit 1
+          fi
 
   setup2:
     runs-on: self-hosted
@@ -233,3 +238,30 @@ jobs:
 
       - name: Verify Pods
         run: kubectl get pods -o wide
+
+  final-report:
+    runs-on: self-hosted
+    steps:
+      - name: Send Build Report
+        if: always()
+        run: |
+          if [[ "$BUILD_STATUS" == "Failed" ]]; then
+            echo "Build failed with error: $BUILD_ERROR"
+            # Envía el error detallado como parte del reporte
+            curl -X POST https://httpbin.org/post \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"job\": \"Build\",
+              \"status\": \"$BUILD_STATUS\",
+              \"details\": \"$BUILD_ERROR\"
+            }"
+          else
+            echo "Build succeeded"
+            curl -X POST https://httpbin.org/post \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"job\": \"Build\",
+              \"status\": \"$BUILD_STATUS\",
+              \"details\": \"Build completed successfully\"
+            }"
+          fi
