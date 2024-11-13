@@ -93,11 +93,24 @@ jobs:
       needs: setup
       steps:
 
-      - name: Build
+      #- name: Build
+      #  run: |
+      #    echo 'Clean and package the application'
+      #    mvn spring-javaformat:apply
+      #    mvn clean package
+  
+      - name: Build Application
         run: |
-          echo 'Clean and package the application'
-          mvn spring-javaformat:apply
-          mvn clean package
+          BUILD_OUTPUT=$(mvn spring-javaformat:apply && mvn clean package 2>&1) || echo "$BUILD_OUTPUT" > build_error.log
+        continue-on-error: true
+
+      - name: Capture Build Result
+        if: failure()
+        run: |
+          ERROR_MESSAGE=$(<build_error.log)
+          echo "BUILD_STATUS=Failed" >> $GITHUB_ENV
+          echo "BUILD_ERROR=${ERROR_MESSAGE}" >> $GITHUB_ENV
+          exit 1
 
   setup2:
     runs-on: self-hosted
