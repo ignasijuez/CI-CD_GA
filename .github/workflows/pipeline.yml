@@ -35,11 +35,11 @@ jobs:
           fi
 
       # option 1
-      #- name: checkout
-      #  uses: actions/checkout@v4 #predefined action from the marketplace
-      #  with: 
-      #    repository: ${{ inputs.REPO_URL }}
-      #    ref: ${{ inputs.BRANCH }}
+      - name: checkout
+        uses: actions/checkout@v4 #predefined action from the marketplace
+        with: 
+          repository: ${{ inputs.REPO_URL }}
+          ref: ${{ inputs.BRANCH }}
 
       #- name: Capture Checkout Result
       #  run: |
@@ -52,22 +52,22 @@ jobs:
       #    fi
         
       # option 2
-      - name: Checkout Repository
-        id: checkout
-        run: |
-          CHECKOUT_OUTPUT=$(git clone ${{ inputs.REPO_URL }} -b ${{ inputs.BRANCH }} 2>&1) || { echo "$CHECKOUT_OUTPUT" > checkout_error.log; exit 1; }
-        continue-on-error: true
+      #- name: Checkout Repository
+      #  id: checkout
+      #  run: |
+      #    CHECKOUT_OUTPUT=$(git clone ${{ inputs.REPO_URL }} -b ${{ inputs.BRANCH }} 2>&1) || { echo "$CHECKOUT_OUTPUT" > checkout_error.log; exit 1; }
+      #  continue-on-error: true
 
-      - name: Capture Checkout Result
-        if: always()
-        run: |
-          if [[ "${{ steps.checkout.outcome }}" == "success" ]]; then
-            echo "CHECKOUT_STATUS=Success" >> $GITHUB_ENV
-          else
-            ERROR_MESSAGE=$(<checkout_error.log)
-            echo "CHECKOUT_STATUS=Failed" >> $GITHUB_ENV
-            echo "CHECKOUT_ERROR=${ERROR_MESSAGE}" >> $GITHUB_ENV
-          fi
+      #- name: Capture Checkout Result
+      #  if: always()
+      #  run: |
+      #    if [[ "${{ steps.checkout.outcome }}" == "success" ]]; then
+      #      echo "CHECKOUT_STATUS=Success" >> $GITHUB_ENV
+      #    else
+      #      ERROR_MESSAGE=$(<checkout_error.log)
+      #      echo "CHECKOUT_STATUS=Failed" >> $GITHUB_ENV
+      #      echo "CHECKOUT_ERROR=${ERROR_MESSAGE}" >> $GITHUB_ENV
+      #    fi
 
   setup:
     runs-on: self-hosted
