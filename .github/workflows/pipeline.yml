@@ -55,10 +55,11 @@ jobs:
       - name: Checkout Repository
         id: checkout
         run: |
-          CHECKOUT_OUTPUT=$(git clone ${{ inputs.REPO_URL }} -b ${{ inputs.BRANCH }} 2>&1) || echo "$CHECKOUT_OUTPUT" > checkout_error.log
+          CHECKOUT_OUTPUT=$(git clone ${{ inputs.REPO_URL }} -b ${{ inputs.BRANCH }} 2>&1) || { echo "$CHECKOUT_OUTPUT" > checkout_error.log; exit 1; }
         continue-on-error: true
 
       - name: Capture Checkout Result
+        if: always()
         run: |
           if [[ "${{ steps.checkout.outcome }}" == "success" ]]; then
             echo "CHECKOUT_STATUS=Success" >> $GITHUB_ENV
@@ -66,7 +67,7 @@ jobs:
             ERROR_MESSAGE=$(<checkout_error.log)
             echo "CHECKOUT_STATUS=Failed" >> $GITHUB_ENV
             echo "CHECKOUT_ERROR=${ERROR_MESSAGE}" >> $GITHUB_ENV
-            exit 1
+          fi
 
   setup:
     runs-on: self-hosted
