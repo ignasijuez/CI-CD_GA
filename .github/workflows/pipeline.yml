@@ -60,7 +60,7 @@ jobs:
 
       - name: Capture Checkout Result
         run: |
-          if [[ -z "${{ steps.checkout.outcome }}" ]]; then
+          if [[ "${{ steps.checkout.outcome }}" == "success" ]]; then
             echo "CHECKOUT_STATUS=Success" >> $GITHUB_ENV
           else
             ERROR_MESSAGE=$(<checkout_error.log)
