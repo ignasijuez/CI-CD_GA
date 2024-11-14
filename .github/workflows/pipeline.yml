@@ -126,6 +126,7 @@ jobs:
         run: |
           BUILD_OUTPUT=$(mvn spring-javaformat:apply && mvn move package 2>&1)
           echo "$BUILD_OUTPUT" > build_error.log
+          echo "OUTPUTTTTTTTT: $BUILD_OUTPUT"
         continue-on-error: true
 
       - name: Capture Build Result
