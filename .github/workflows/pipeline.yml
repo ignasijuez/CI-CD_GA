@@ -93,8 +93,8 @@ jobs:
       runs-on: self-hosted
       needs: setup
       outputs:
-        BUILD_STATUS: ${{ steps.set_build_status.outputs.status }}
-        BUILD_ERROR: ${{ steps.set_build_status.outputs.error }}
+        BUILD_STATUS: ${{ steps.set_build_status.outputs.BUILD_STATUS }}
+        BUILD_ERROR: ${{ steps.set_build_status.outputs.BUILD_ERROR }}
       steps:
 
       #original
@@ -125,18 +125,19 @@ jobs:
         id: build_step
         run: |
           BUILD_OUTPUT=$(mvn spring-javaformat:apply && mvn move package 2>&1)
+          echo "$BUILD_OUTPUT" > build_error.log
         continue-on-error: true
 
       - name: Capture Build Result
-        if: always()
+        id: set_build_status
         run: |
           if [[ "${{ steps.build_step.outcome }}" == "success" ]]; then
-            echo "BUILD_STATUS=Success" >> $GITHUB_ENV
-            echo "BUILD_ERROR=" >> $GITHUB_ENV
+            echo "::set-output name=BUILD_STATUS::Success"
+            echo "::set-output name=BUILD_ERROR::"
           else
-            echo "BUILD_STATUS=Failed" >> $GITHUB_ENV
-            echo "BUILD_ERROR=$BUILD_OUTPUT" >> $GITHUB_ENV
-            exit 1
+            echo "::set-output name=BUILD_STATUS::Failed"
+            BUILD_ERROR=$(<build_error.log)
+            echo "::set-output name=BUILD_ERROR::$BUILD_ERROR"
           fi
 
   setup2:
