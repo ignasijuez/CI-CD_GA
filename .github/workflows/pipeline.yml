@@ -268,16 +268,13 @@ jobs:
     if: always()
     steps:
       - name: Generate Final Report
-        if: always()
         run: |
           report="{\"jobs\": []}"
 
           # Append Build Status
           build_status="${{ needs.build.outputs.BUILD_STATUS }}"
           build_error="${{ needs.build.outputs.BUILD_ERROR }}"
-          report=$(echo "$report" | jq --arg status "$build_status" --arg details "$build_details" '.jobs += [{"name": "build", "status": $status, "details": $details}]')
-
-          # Additional job statuses can be appended in the same way
+          report=$(echo "$report" | jq --arg name "build" --arg status "$build_status" --arg details "$build_error" '.jobs += [{"name": $name, "status": $status, "details": $details}]')
 
           echo "Final Report: $report"
           curl -X POST -H "Content-Type: application/json" -d "$report" https://httpbin.org/post
