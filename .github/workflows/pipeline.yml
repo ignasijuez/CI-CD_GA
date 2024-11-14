@@ -264,6 +264,11 @@ jobs:
   final-report:
     runs-on: self-hosted
     needs: [checkout, setup, build, setup2, docker-login, docker-build-push, deploy-mysql, deploy-app]
+    env:
+      CHECKOUT_STATUS: ${{ env.CHECKOUT_STATUS }}
+      CHECKOUT_ERROR: ${{ env.CHECKOUT_ERROR }}
+      BUILD_STATUS: ${{ env.BUILD_STATUS }}
+      BUILD_ERROR: ${{ env.BUILD_ERROR }}
     steps:
       - name: Generate Final Report
         if: always()
