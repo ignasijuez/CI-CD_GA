@@ -264,6 +264,7 @@ jobs:
   final-report:
     runs-on: self-hosted
     needs: [checkout, setup, build, setup2, docker-login, docker-build-push, deploy-mysql, deploy-app]
+    if: always()
     env:
       CHECKOUT_STATUS: ${{ env.CHECKOUT_STATUS }}
       CHECKOUT_ERROR: ${{ env.CHECKOUT_ERROR }}
