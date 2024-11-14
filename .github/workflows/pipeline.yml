@@ -265,11 +265,6 @@ jobs:
     runs-on: self-hosted
     needs: [checkout, setup, build, setup2, docker-login, docker-build-push, deploy-mysql, deploy-app]
     if: always()
-    env:
-      CHECKOUT_STATUS: ${{ env.CHECKOUT_STATUS }}
-      CHECKOUT_ERROR: ${{ env.CHECKOUT_ERROR }}
-      BUILD_STATUS: ${{ env.BUILD_STATUS }}
-      BUILD_ERROR: ${{ env.BUILD_ERROR }}
     steps:
       - name: Generate Final Report
         if: always()
@@ -282,8 +277,8 @@ jobs:
           report=$(echo "$report" | jq --arg status "$checkout_status" --arg details "$checkout_details" '.jobs += [{"name": "checkout", "status": $status, "details": $details}]')
 
           # Append Build Status
-          build_status="${{ env.BUILD_STATUS }}"
-          build_details="${{ env.BUILD_ERROR }}"
+          build_status="${{ needs.build.outputs.BUILD_STATUS }}"
+          build_error="${{ needs.build.outputs.BUILD_ERROR }}"
           report=$(echo "$report" | jq --arg status "$build_status" --arg details "$build_details" '.jobs += [{"name": "build", "status": $status, "details": $details}]')
 
           # Additional job statuses can be appended in the same way
