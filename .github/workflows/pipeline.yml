@@ -124,7 +124,7 @@ jobs:
       - name: Build Application
         id: build_step
         run: |
-          BUILD_OUTPUT=$(mvn spring-javaformat:apply && mvn clean package 2>&1)
+          BUILD_OUTPUT=$(mvn spring-javaformat:apply && mvn move package 2>&1)
         continue-on-error: true
 
       - name: Capture Build Result
