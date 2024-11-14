@@ -263,7 +263,7 @@ jobs:
 
   final-report:
     runs-on: self-hosted
-    needs: [checkout, steup, build, setup2, docker-login, docker-build-push, deploy-mysql, deploy-app]
+    needs: [checkout, setup, build, setup2, docker-login, docker-build-push, deploy-mysql, deploy-app]
     steps:
       - name: Generate Final Report
         if: always()
