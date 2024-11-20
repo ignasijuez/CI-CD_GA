@@ -43,6 +43,12 @@ jobs:
 
       - name: List workspace contents
         run: ls -R
+      
+      - name: Upload code artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: source-code
+          path: .
 
       
       #- name: Capture Checkout Result
@@ -96,8 +102,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: setup
     steps:
-      - name: List workspace contents
-        run: ls -R
+      - name: Download code artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: source-code
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
