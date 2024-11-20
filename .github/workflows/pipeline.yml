@@ -89,6 +89,25 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+  sonarScannerCloudScan:
+    runs-on: self-hosted
+    needs: setup
+    steps:
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PROJECT_KEY: ignasijuez_github
+          SONAR_ORGANIZATION: ignasijuez
+        with:
+          args: >
+            -Dsonar.projectKey=${SONAR_PROJECT_KEY}
+            -Dsonar.organization=${SONAR_ORGANIZATION}
+            -Dsonar.sources=src
+            -Dsonar.exclusions=**/*.java
+            -Dsonar.java.binaries=none
+            -Dsonar.qualitygate.wait=false
+
   build:
       runs-on: self-hosted
       needs: setup
