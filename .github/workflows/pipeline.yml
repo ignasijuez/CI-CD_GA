@@ -122,6 +122,7 @@ jobs:
           mvn org.owasp:dependency-check-maven:check \
               -Dformat=HTML \
               -Dexcludes=com.h2database:h2 \
+              -DcveValidForHours=24 \
               -DoutputDirectory=dependency-check-report
         continue-on-error: true
 
@@ -225,7 +226,7 @@ jobs:
   #      run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
   docker-login:
-    needs: setup
+    needs: build
     uses: ./.github/workflows/reusable-docker-login.yml
     #with:
     #  DOCKER_IMAGE: "juezignasi/ga-app"
@@ -245,7 +246,7 @@ jobs:
 
   docker-build-push:
     runs-on: self-hosted
-    needs: [build, docker-login]
+    needs: docker-login
     steps:
       #- name: Verify DOCKER_IMAGE value
       #  run: echo "DOCKER_IMAGE is set to ${{ inputs.DOCKER_IMAGE }}"
