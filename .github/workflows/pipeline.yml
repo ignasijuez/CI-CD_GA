@@ -120,24 +120,21 @@ jobs:
       - name: Run OWASP Dependency Check
         id: dependency_check
         run: |
-          mkdir -p $GITHUB_WORKSPACE/dependency-check-report
           mvn org.owasp:dependency-check-maven:check \
               -Dformat=HTML \
               -DautoUpdate=false \
               -Dexcludes=com.h2database:h2 \
               -DoutputDirectory=dependency-check-report
-          ls -R
         continue-on-error: true
 
-      - name: Verify Dependency Check Report
-        run: ls -R dependency-check-report
 
-      - name: Upload Dependency-Check Report
-        if: always() # Esto asegura que el informe se suba incluso si el análisis falla
-        uses: actions/upload-artifact@v3
-        with:
-          name: dependency-check-report
-          path: dependency-check-report/
+
+      #- name: Upload Dependency-Check Report
+      #  if: always() # Esto asegura que el informe se suba incluso si el análisis falla
+      #  uses: actions/upload-artifact@v3
+      #  with:
+      #    name: dependency-check-report
+      #    path: dependency-check-report/
       
       # Determine Dependency-Check Result
       - name: Check Dependency Validation Status
