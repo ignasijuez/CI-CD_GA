@@ -124,8 +124,9 @@ jobs:
               -Dformat=HTML \
               -DautoUpdate=false \
               -Dexcludes=com.h2database:h2 \
-              -DfailBuildOnCVSS=1 \
-              -DoutputDirectory=dependency-check-report
+              -DfailBuildOnCVSS=1.0 \
+              -DoutputDirectory=dependency-check-report || exit_code=$?
+          echo "exit_code=$exit_code" >> $GITHUB_ENV
         continue-on-error: true
 
 
@@ -138,12 +139,13 @@ jobs:
       #    path: dependency-check-report/
       
       # Determine Dependency-Check Result
-      - name: Check Dependency Validation Status
+      - name: Determine Dependency Check Result
         run: |
-          if [ "${{ steps.dependency_check.outcome }}" == "success" ]; then
-            echo "Dependency validation marked as STABLE."
+          if [ "${{ env.exit_code }}" -ne 0 ]; then
+            echo "Dependency validation failed. Vulnerabilities detected!"
+            exit 1
           else
-            echo "Dependency validation marked as UNSTABLE."
+            echo "Dependency validation passed successfully."
           fi
 
   build:
