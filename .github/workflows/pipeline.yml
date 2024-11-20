@@ -122,11 +122,14 @@ jobs:
         run: |
           mvn org.owasp:dependency-check-maven:check \
               -Dformat=HTML \
-              -DfailOnError=false \
               -DautoUpdate=false \
               -Dexcludes=com.h2database:h2 \
               -DoutputDirectory=dependency-check-report
+          ls -R
         continue-on-error: true
+
+      - name: Verify Dependency Check Report
+        run: ls -R dependency-check-report
 
       - name: Upload Dependency-Check Report
         if: always() # Esto asegura que el informe se suba incluso si el análisis falla
@@ -138,10 +141,10 @@ jobs:
       # Determine Dependency-Check Result
       - name: Check Dependency Validation Status
         run: |
-          if [ "${{ steps.dependency_check.outcome }}" != "success" ]; then
-            echo "Dependency validation marked as UNSTABLE."
-          else
+          if [ "${{ steps.dependency_check.outcome }}" == "success" ]; then
             echo "Dependency validation marked as STABLE."
+          else
+            echo "Dependency validation marked as UNSTABLE."
           fi
 
   build:
