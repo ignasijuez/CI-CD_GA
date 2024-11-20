@@ -139,7 +139,7 @@ jobs:
       # Determine Dependency-Check Result
       - name: Check Dependency Validation Status
         run: |
-          if [ "${{ steps.dependency_check.outcome }}" == "success" ]; then
+          if [ "${{ steps.dependency_check.conclusion }}" == "success" ]; then
             echo "Dependency validation marked as STABLE."
           else
             echo "Dependency validation marked as UNSTABLE."
