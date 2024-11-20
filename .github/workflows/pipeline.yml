@@ -43,12 +43,6 @@ jobs:
 
       - name: List workspace contents
         run: ls -R
-      
-      - name: Upload code artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: source-code
-          path: .
 
       
       #- name: Capture Checkout Result
@@ -99,26 +93,23 @@ jobs:
           distribution: 'temurin'
 
   sonarScannerCloudScan:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: setup
     steps:
-      - name: Download code artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: source-code
-      - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@master
+      - name: Run SonarScanner
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_PROJECT_KEY: ignasijuez_github
-          SONAR_ORGANIZATION: ignasijuez
-        with:
-          args: >
-            -Dsonar.projectKey=${SONAR_PROJECT_KEY}
-            -Dsonar.organization=${SONAR_ORGANIZATION}
-            -Dsonar.sources=src/main/java
-            -Dsonar.exclusions=**/*.java
-            -Dsonar.java.binaries=none
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+            SONAR_PROJECT_KEY: ignasijuez_github
+            SONAR_ORGANIZATION: ignasijuez
+        run: |
+          sonar-scanner \
+            -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+            -Dsonar.organization=${SONAR_ORGANIZATION} \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=${SONAR_TOKEN} \
+            -Dsonar.sources=src \
+            -Dsonar.exclusions=**/*.java \
+            -Dsonar.java.binaries=none \
             -Dsonar.qualitygate.wait=false
 
   build:
