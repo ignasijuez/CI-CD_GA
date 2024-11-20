@@ -116,34 +116,29 @@ jobs:
     runs-on: self-hosted
     needs: setup
     steps:
-      - name: OWASP Dependency-Check
-        uses: dependency-check/dependency-check-action@v6.5.3
-        with:
-          project: "Dependency Validation"
-          format: "HTML"
-          outputDirectory: "./dependency-check-report"
-          scan: "./" # Directorio donde se encuentran tus dependencias
-          #suppressionFile: "./suppressions.xml" # Si tienes un archivo de exclusiones
-          failOnCVSS: "7" # Configura el nivel CVSS para fallar el pipeline si es necesario
-        env:
-          DC_EXCLUDES: "com.h2database:h2" # Exclusión equivalente al parámetro -Dexcludes
-        continue-on-error: true # Permitir que el pipeline continue incluso si detecta errores
+      - name: Run OWASP Dependency Check
+        id: dependency_check
+        run: |
+          mvn org.owasp:dependency-check-maven:check \
+              -Dformat=HTML \
+              -Dexcludes=com.h2database:h2 \
+              -DoutputDirectory=dependency-check-report
+        continue-on-error: true
 
-      # Upload the Dependency-Check Report
       - name: Upload Dependency-Check Report
+        if: always() # Esto asegura que el informe se suba incluso si el análisis falla
         uses: actions/upload-artifact@v3
         with:
           name: dependency-check-report
-          path: ./dependency-check-report
+          path: dependency-check-report/
       
       # Determine Dependency-Check Result
       - name: Check Dependency Validation Status
-        id: check_dependency_status
         run: |
           if [ "${{ steps.dependency_check.outcome }}" != "success" ]; then
-            echo "UNSTABLE"
+            echo "Dependency validation marked as UNSTABLE."
           else
-            echo "STABLE"
+            echo "Dependency validation marked as STABLE."
           fi
 
   build:
