@@ -117,27 +117,17 @@ jobs:
     needs: setup
     steps:
       - name: OWASP Dependency-Check
-        uses: jeremylong/dependency-check-action@v6.5.3
+        uses: dependency-check/dependency-check-action@v6.5.3
         with:
           project: "Dependency Validation"
-          format: "HTML,JSON" # Generar ambos formatos
+          format: "HTML"
           outputDirectory: "./dependency-check-report"
           scan: "./" # Directorio donde se encuentran tus dependencias
-          suppressionFile: "./suppressions.xml" # Si tienes un archivo de exclusiones
+          #suppressionFile: "./suppressions.xml" # Si tienes un archivo de exclusiones
           failOnCVSS: "7" # Configura el nivel CVSS para fallar el pipeline si es necesario
         env:
           DC_EXCLUDES: "com.h2database:h2" # Exclusión equivalente al parámetro -Dexcludes
         continue-on-error: true # Permitir que el pipeline continue incluso si detecta errores
-
-       # Determine Dependency-Check Result
-      - name: Check Dependency Validation Status
-        id: check_dependency_status
-        run: |
-          if [ "${{ steps.dependency_check.outcome }}" != "success" ]; then
-            echo "UNSTABLE=true" >> $GITHUB_ENV
-          else
-            echo "UNSTABLE=false" >> $GITHUB_ENV
-          fi
 
       # Upload the Dependency-Check Report
       - name: Upload Dependency-Check Report
@@ -145,6 +135,16 @@ jobs:
         with:
           name: dependency-check-report
           path: ./dependency-check-report
+      
+      # Determine Dependency-Check Result
+      - name: Check Dependency Validation Status
+        id: check_dependency_status
+        run: |
+          if [ "${{ steps.dependency_check.outcome }}" != "success" ]; then
+            echo "UNSTABLE"
+          else
+            echo "STABLE"
+          fi
 
   build:
       runs-on: self-hosted
