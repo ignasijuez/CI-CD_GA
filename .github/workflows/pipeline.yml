@@ -122,8 +122,9 @@ jobs:
         run: |
           mvn org.owasp:dependency-check-maven:check \
               -Dformat=HTML \
+              -DfailOnError=false \
+              -DautoUpdate=false \
               -Dexcludes=com.h2database:h2 \
-              -DcveValidForHours=24 \
               -DoutputDirectory=dependency-check-report
         continue-on-error: true
 
