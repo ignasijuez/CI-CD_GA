@@ -112,6 +112,7 @@ jobs:
             -Dsonar.java.binaries=none \
             -Dsonar.qualitygate.wait=false
 
+
   Prebuild-Dependency-Analysis:
     runs-on: self-hosted
     needs: setup
