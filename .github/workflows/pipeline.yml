@@ -120,6 +120,7 @@ jobs:
       - name: Run OWASP Dependency Check
         id: dependency_check
         run: |
+          mkdir -p dependency-check-report
           mvn org.owasp:dependency-check-maven:check \
               -Dformat=HTML \
               -DautoUpdate=false \
