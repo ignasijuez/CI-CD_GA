@@ -92,7 +92,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-  sonarScannerCloudScan:
+  Prebuild-sonarScannerCloudScan:
     runs-on: self-hosted
     needs: setup
     steps:
@@ -112,9 +112,43 @@ jobs:
             -Dsonar.java.binaries=none \
             -Dsonar.qualitygate.wait=false
 
+  Prebuild-Dependency-Analysis:
+    runs-on: self-hosted
+    needs: setup
+    steps:
+      - name: OWASP Dependency-Check
+        uses: jeremylong/dependency-check-action@v6.5.3
+        with:
+          project: "Dependency Validation"
+          format: "HTML,JSON" # Generar ambos formatos
+          outputDirectory: "./dependency-check-report"
+          scan: "./" # Directorio donde se encuentran tus dependencias
+          suppressionFile: "./suppressions.xml" # Si tienes un archivo de exclusiones
+          failOnCVSS: "7" # Configura el nivel CVSS para fallar el pipeline si es necesario
+        env:
+          DC_EXCLUDES: "com.h2database:h2" # Exclusión equivalente al parámetro -Dexcludes
+        continue-on-error: true # Permitir que el pipeline continue incluso si detecta errores
+
+       # Determine Dependency-Check Result
+      - name: Check Dependency Validation Status
+        id: check_dependency_status
+        run: |
+          if [ "${{ steps.dependency_check.outcome }}" != "success" ]; then
+            echo "UNSTABLE=true" >> $GITHUB_ENV
+          else
+            echo "UNSTABLE=false" >> $GITHUB_ENV
+          fi
+
+      # Upload the Dependency-Check Report
+      - name: Upload Dependency-Check Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: dependency-check-report
+          path: ./dependency-check-report
+
   build:
       runs-on: self-hosted
-      needs: [setup, sonarScannerCloudScan]
+      needs: [setup, Prebuild-sonarScannerCloudScan]
       outputs:
         BUILD_STATUS: ${{ steps.set_build_status.outputs.BUILD_STATUS }}
         BUILD_ERROR: ${{ steps.set_build_status.outputs.BUILD_ERROR }}
