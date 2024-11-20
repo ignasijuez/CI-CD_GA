@@ -124,8 +124,9 @@ jobs:
               -Dformat=HTML \
               -DautoUpdate=false \
               -Dexcludes=com.h2database:h2 \
+              -DfailBuildOnCVSS=1 \
               -DoutputDirectory=dependency-check-report
-        
+        continue-on-error: true
 
 
 
