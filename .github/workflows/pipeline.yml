@@ -41,7 +41,8 @@ jobs:
           repository: ${{ inputs.REPO_URL }}
           ref: ${{ inputs.BRANCH }}
 
-
+      - name: List workspace contents
+        run: ls -R
       #- name: Capture Checkout Result
       #  run: |
       #    if [[ -z "${{ steps.checkout.outcome }}" ]]; then
@@ -93,9 +94,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: setup
     steps:
-      - name: checking 
-        run: ls -la
-        
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
