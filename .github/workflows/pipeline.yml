@@ -104,7 +104,7 @@ jobs:
           args: >
             -Dsonar.projectKey=${SONAR_PROJECT_KEY}
             -Dsonar.organization=${SONAR_ORGANIZATION}
-            -Dsonar.sources=src
+            -Dsonar.sources=src/main/java
             -Dsonar.exclusions=**/*.java
             -Dsonar.java.binaries=none
             -Dsonar.qualitygate.wait=false
