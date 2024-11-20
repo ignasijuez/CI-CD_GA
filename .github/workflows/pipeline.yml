@@ -93,6 +93,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: setup
     steps:
+      - name: checking 
+        run: ls -la
+        
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
@@ -110,7 +113,7 @@ jobs:
 
   build:
       runs-on: self-hosted
-      needs: setup
+      needs: [setup, sonarScannerCloudScan]
       outputs:
         BUILD_STATUS: ${{ steps.set_build_status.outputs.BUILD_STATUS }}
         BUILD_ERROR: ${{ steps.set_build_status.outputs.BUILD_ERROR }}
