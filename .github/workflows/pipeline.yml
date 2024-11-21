@@ -112,6 +112,18 @@ jobs:
             -Dsonar.java.binaries=none \
             -Dsonar.qualitygate.wait=false
 
+      - name: Extract SonarCloud Task ID
+        id: extract_task_id
+        run: |
+          if [ ! -f target/sonar/report-task.txt ]; then
+            echo "SonarCloud report-task.txt not found!"
+            exit 1
+          fi
+          task_id=$(grep 'ceTaskId' target/sonar/report-task.txt | cut -d '=' -f 2)
+          echo "Task ID (local): ${taskId}"
+          echo "TASK_ID=$task_id" >> $GITHUB_ENV
+        continue-on-error: false
+
 
   Prebuild-Dependency-Analysis:
     runs-on: self-hosted
