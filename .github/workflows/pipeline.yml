@@ -123,7 +123,7 @@ jobs:
             exit 1
           fi
           task_id=$(grep 'ceTaskId' .scannerwork/report-task.txt | cut -d '=' -f 2)
-          echo "Task ID (local): $taskId"
+          echo "Task ID (local): $task_id"
           echo "TASK_ID=$task_id" >> $GITHUB_ENV
         continue-on-error: false
 
