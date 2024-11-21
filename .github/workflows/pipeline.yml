@@ -112,6 +112,12 @@ jobs:
             -Dsonar.java.binaries=none \
             -Dsonar.qualitygate.wait=false
 
+      - name: Debug SonarScanner Output
+        run: ls -R .
+
+      - name: Locate report-task.txt
+        run: find . -name "report-task.txt"
+
       - name: Extract SonarCloud Task ID
         id: extract_task_id
         run: |
