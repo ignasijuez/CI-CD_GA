@@ -112,23 +112,24 @@ jobs:
             -Dsonar.java.binaries=none \
             -Dsonar.qualitygate.wait=false
 
-      - name: Debug SonarScanner Output
-        run: ls -R .
-
-      - name: Locate report-task.txt
-        run: find . -name "report-task.txt"
+      #- name: Locate report-task.txt
+      #  run: find . -name "report-task.txt"
 
       - name: Extract SonarCloud Task ID
         id: extract_task_id
         run: |
-          if [ ! -f target/sonar/report-task.txt ]; then
+          if [ ! -f .scannerwork/report-task.txt ]; then
             echo "SonarCloud report-task.txt not found!"
             exit 1
           fi
-          task_id=$(grep 'ceTaskId' target/sonar/report-task.txt | cut -d '=' -f 2)
-          echo "Task ID (local): ${taskId}"
+          task_id=$(grep 'ceTaskId' .scannerwork/report-task.txt | cut -d '=' -f 2)
+          echo "Task ID (local): $taskId"
           echo "TASK_ID=$task_id" >> $GITHUB_ENV
         continue-on-error: false
+
+      - name: Debug Task ID
+        run: |
+          echo "Extracted Task ID: ${{ env.TASK_ID }}"
 
 
   Prebuild-Dependency-Analysis:
