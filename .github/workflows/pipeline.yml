@@ -145,14 +145,6 @@ jobs:
           #echo "exit_code=$exit_code" >> $GITHUB_ENV
         continue-on-error: true
 
-      - name: Use Task ID from Previous Job
-        run: |
-          echo "TASK_ID from previous job: ${{ needs.Prebuild-sonarScannerCloudScan.outputs.TASK_ID }}"
-          if [ "${{ needs.Prebuild-sonarScannerCloudScan.outputs.TASK_ID }}" == "not_found" ]; then
-            echo "No Task ID found, skipping status check."
-            exit 0
-          fi
-
       #- name: Upload Dependency-Check Report
       #  if: always() # Esto asegura que el informe se suba incluso si el análisis falla
       #  uses: actions/upload-artifact@v3
@@ -202,6 +194,14 @@ jobs:
       #      echo "BUILD_ERROR=${ERROR_MESSAGE}" >> $GITHUB_ENV
       #      exit 1
       #    fi
+      - name: Use Task ID from Previous Job
+        run: |
+          echo "TASK_ID from previous job: ${{ needs.Prebuild-sonarScannerCloudScan.outputs.TASK_ID }}"
+          if [ "${{ needs.Prebuild-sonarScannerCloudScan.outputs.TASK_ID }}" == "not_found" ]; then
+            echo "No Task ID found, skipping status check."
+            exit 0
+          fi
+
       - name: Build Application
         id: build_step
         run: |
