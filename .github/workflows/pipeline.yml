@@ -95,6 +95,8 @@ jobs:
   Prebuild-sonarScannerCloudScan:
     runs-on: self-hosted
     needs: setup
+    outputs:
+      TASK_ID: ${{ steps.extract_task_id.outputs.task_id }} # Define el output
     steps:
       - name: Run SonarScanner
         env:
@@ -124,13 +126,8 @@ jobs:
           fi
           task_id=$(grep 'ceTaskId' .scannerwork/report-task.txt | cut -d '=' -f 2)
           echo "Task ID (local): $task_id"
-          echo "TASK_ID=$task_id" >> $GITHUB_ENV
+          echo "::set-output name=task_id::$task_id"
         continue-on-error: false
-
-      - name: Debug Task ID
-        run: |
-          echo "Extracted Task ID: ${{ env.TASK_ID }}"
-
 
   Prebuild-Dependency-Analysis:
     runs-on: self-hosted
@@ -148,9 +145,13 @@ jobs:
           #echo "exit_code=$exit_code" >> $GITHUB_ENV
         continue-on-error: true
 
-      - name: Debug Task ID
+      - name: Use Task ID from Previous Job
         run: |
-          echo "Extracted Task ID: ${{ env.TASK_ID }}"
+          echo "TASK_ID from previous job: ${{ needs.Prebuild-sonarScannerCloudScan.outputs.TASK_ID }}"
+          if [ "${{ needs.Prebuild-sonarScannerCloudScan.outputs.TASK_ID }}" == "not_found" ]; then
+            echo "No Task ID found, skipping status check."
+            exit 0
+          fi
 
       #- name: Upload Dependency-Check Report
       #  if: always() # Esto asegura que el informe se suba incluso si el análisis falla
