@@ -44,13 +44,13 @@ jobs:
       - name: List workspace contents
         run: ls -R
 
-      #- name: Upload Liquibase Artifacts
-      #  uses: actions/upload-artifact@v3
-      #  with:
-      #    name: liquibase-files
-      #    path: |
-      #      src/main/resources/liquibase/changelog.xml
-      #      src/main/resources/mysql-connector-j-9.1.0.jar
+      - name: Upload Liquibase Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: liquibase-files
+          path: |
+            src/main/resources/liquibase/changelog.xml
+            src/main/resources/mysql-connector-j-9.1.0.jar
 
   setup:
     runs-on: self-hosted
@@ -192,15 +192,23 @@ jobs:
           pwd
           ls -la
 
+      - name: Download Liquibase Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: liquibase-files
+
+      - name: test2
+        run: ls -la
+
       - name: Liquibase Update
         uses: liquibase-github-actions/update@v4.30.0
         with:
-          url: jdbc:mysql://github-mysql-service:3306/petclinic
+          url: jdbc:mysql://localhost:3306/petclinic
           username: petclinic
           password: petclinic
-          changeLogFile: src/main/resources/liquibase/changelog.xml
+          changeLogFile: ./changelog.xml
           driver: com.mysql.cj.jdbc.Driver
-          classpath: src/main/resources/mysql-connector-j-9.1.0.jar
+          classpath: ./mysql-connector-j-9.1.0.jar
           logLevel: INFO
 
   deploy-app:
