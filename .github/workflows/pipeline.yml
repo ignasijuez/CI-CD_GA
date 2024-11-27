@@ -44,14 +44,6 @@ jobs:
       - name: List workspace contents
         run: ls -R
 
-      - name: Upload Liquibase Artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: liquibase-files
-          path: |
-            src/main/resources/liquibase/changelog.xml
-            src/main/resources/mysql-connector-j-9.1.0.jar
-
   setup:
     runs-on: self-hosted
     needs: checkout
@@ -187,22 +179,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: deploy-mysql
     steps:
-      - name: test
-        run: |
-          pwd
-          ls -la
-
-      - name: Download Liquibase Artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: liquibase-files
-
-      - name: test1
-        run: ls -la
-
-      - name: test2
-        run: ls -la liquibase/
-
       - name: Liquibase Update
         uses: liquibase-github-actions/update@v4.30.0
         with:
@@ -213,6 +189,16 @@ jobs:
           driver: com.mysql.cj.jdbc.Driver
           classpath: ./mysql-connector-j-9.1.0.jar
           logLevel: INFO
+  
+  liquibase-update2:
+    runs-on: self-hosted
+    steps:
+      - name: Run Liquibase Update
+        run: |
+          liquibase \
+            --defaultsFile=src/main/resources/liquibase.properties \
+            --classpath=src/main/resources/mysql-connector-j-9.1.0.jar \
+            update
 
   deploy-app:
     runs-on: self-hosted
