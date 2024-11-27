@@ -1,0 +1,16 @@
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- Changeset de prueba para insertar un nuevo vet -->
+    <changeSet id="test-add-new-vet" author="your_name" runOnChange="true">
+        <sql>
+            SET @next_id = (SELECT COALESCE(MAX(id), 0) + 1 FROM vets);
+            INSERT INTO vets (id, first_name, last_name) 
+            VALUES (@next_id, 'Liquibase', 'Github Test 1');
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

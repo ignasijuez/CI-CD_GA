@@ -44,35 +44,6 @@ jobs:
       - name: List workspace contents
         run: ls -R
 
-      
-      #- name: Capture Checkout Result
-      #  run: |
-      #    if [[ -z "${{ steps.checkout.outcome }}" ]]; then
-      #      echo "CHECKOUT_STATUS=Success" >> $GITHUB_ENV
-      #    else
-      #      echo "CHECKOUT_STATUS=Failed" >> $GITHUB_ENV
-      #      echo "CHECKOUT_ERROR=${{ steps.checkout.outcome }}" >> $GITHUB_ENV
-      #      exit 1
-      #    fi
-        
-      # option 2
-      #- name: Checkout Repository
-      #  id: checkout
-      #  run: |
-      #    CHECKOUT_OUTPUT=$(git clone ${{ inputs.REPO_URL }} -b ${{ inputs.BRANCH }} 2>&1) || { echo "$CHECKOUT_OUTPUT" > checkout_error.log; exit 1; }
-      #  continue-on-error: true
-
-      #- name: Capture Checkout Result
-      #  if: always()
-      #  run: |
-      #    if [[ "${{ steps.checkout.outcome }}" == "success" ]]; then
-      #      echo "CHECKOUT_STATUS=Success" >> $GITHUB_ENV
-      #    else
-      #      ERROR_MESSAGE=$(<checkout_error.log)
-      #      echo "CHECKOUT_STATUS=Failed" >> $GITHUB_ENV
-      #      echo "CHECKOUT_ERROR=${ERROR_MESSAGE}" >> $GITHUB_ENV
-      #    fi
-
   setup:
     runs-on: self-hosted
     needs: checkout
@@ -92,76 +63,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-  Prebuild-sonarScannerCloudScan:
-    runs-on: self-hosted
-    needs: setup
-    outputs:
-      TASK_ID: ${{ steps.extract_task_id.outputs.task_id }} # Define el output
-    steps:
-      - name: Run SonarScanner
-        env:
-            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-            SONAR_PROJECT_KEY: ignasijuez_github
-            SONAR_ORGANIZATION: ignasijuez
-        run: |
-          sonar-scanner \
-            -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-            -Dsonar.organization=${SONAR_ORGANIZATION} \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.login=${SONAR_TOKEN} \
-            -Dsonar.sources=src \
-            -Dsonar.exclusions=**/*.java \
-            -Dsonar.java.binaries=none \
-            -Dsonar.qualitygate.wait=false
-
-      #- name: Locate report-task.txt
-      #  run: find . -name "report-task.txt"
-
-      - name: Extract SonarCloud Task ID
-        id: extract_task_id
-        run: |
-          if [ ! -f .scannerwork/report-task.txt ]; then
-            echo "SonarCloud report-task.txt not found!"
-            exit 1
-          fi
-          task_id=$(grep 'ceTaskId' .scannerwork/report-task.txt | cut -d '=' -f 2)
-          echo "Task ID (local): $task_id"
-          echo "::set-output name=task_id::$task_id"
-        continue-on-error: false
-
-  Prebuild-Dependency-Analysis:
-    runs-on: self-hosted
-    needs: setup
-    steps:
-      - name: Run OWASP Dependency Check
-        id: dependency_check
-        run: |
-          mvn org.owasp:dependency-check-maven:check \
-              -Dformat=HTML \
-              -DautoUpdate=false \
-              -Dexcludes=com.h2database:h2 \
-              -DfailBuildOnCVSS=1.0 \
-              -DoutputDirectory=dependency-check-report #|| exit_code=$?
-          #echo "exit_code=$exit_code" >> $GITHUB_ENV
-        continue-on-error: true
-
-      #- name: Upload Dependency-Check Report
-      #  if: always() # Esto asegura que el informe se suba incluso si el análisis falla
-      #  uses: actions/upload-artifact@v3
-      #  with:
-      #    name: dependency-check-report
-      #    path: dependency-check-report/
-      
-      # Determine Dependency-Check Result
-      #- name: Determine Dependency Check Result
-      #  run: |
-      #    if [ "${{ env.exit_code }}" -ne 0 ]; then
-      #      echo "Dependency validation failed. Vulnerabilities detected!"
-      #      echo "UNSTABLE: Dependency validation did not pass."
-      #    else
-      #      echo "STABLE: Dependency validation passed successfully."
-      #    fi
-
   build:
       runs-on: self-hosted
       needs: setup
@@ -169,31 +70,6 @@ jobs:
         BUILD_STATUS: ${{ steps.set_build_status.outputs.BUILD_STATUS }}
         BUILD_ERROR: ${{ steps.set_build_status.outputs.BUILD_ERROR }}
       steps:
-
-      #original
-      #- name: Build
-      #  run: |
-      #    echo 'Clean and package the application'
-      #    mvn spring-javaformat:apply
-      #    mvn clean package
-  
-      #- name: Build Application
-      #  id: build_step
-      #  run: |
-      #    BUILD_OUTPUT=$(mvn spring-javaformat:apply && mvn clean package 2>&1) || { echo "$BUILD_OUTPUT" > build_error.log; exit 1; }
-      #  continue-on-error: true
-
-      #- name: Capture Build Result
-      #  if: always()  # Se ejecuta siempre para capturar el estado del build
-      #  run: |
-      #    if [[ "${{ steps.build_step.outcome }}" == "success" ]]; then
-      #      echo "BUILD_STATUS=Success" >> $GITHUB_ENV
-      #    else
-      #      ERROR_MESSAGE=$(<build_error.log)
-      #      echo "BUILD_STATUS=Failed" >> $GITHUB_ENV
-      #      echo "BUILD_ERROR=${ERROR_MESSAGE}" >> $GITHUB_ENV
-      #      exit 1
-      #    fi
 
       - name: Build Application
         id: build_step
@@ -227,25 +103,6 @@ jobs:
       - name: Setup Kubernetes
         uses: ./.github/actions/setup-k8s
 
-      #- name: Set KUBECONFIG Environment Variable
-      #  run: echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV
-
-      #- name: Verify Kubernetes Context
-      #  run: kubectl config get-contexts
-
-      #- name: Set Minikube Context
-      #  run: kubectl config use-context minikube
-
-      #- name: Check2
-      #  run: kubectl cluster-info
-
-  #docker-login:
-  #  runs-on: self-hosted
-  #  needs: setup
-  #  steps:
-  #    - name: Log in to DockerHub
-  #      run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-
   docker-login:
     needs: build
     uses: ./.github/workflows/reusable-docker-login.yml
@@ -255,15 +112,6 @@ jobs:
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-
-  #docker-build-push:
-  #  runs-on: self-hosted
-  #  needs: [build, docker-login]
-  #  steps:
-  #    - name: Build and push Docker image
-  #      run: |
-  #        docker build -t juezignasi/ga-app:latest .
-  #        docker push juezignasi/ga-app:latest
 
   docker-build-push:
     runs-on: self-hosted
@@ -278,64 +126,6 @@ jobs:
           context: .
           push: true
           tags: juezignasi/ga-app:latest
-
-  Check-SonarCloud-Results:
-    runs-on: self-hosted
-    needs: [docker-build-push, Prebuild-sonarScannerCloudScan]
-    steps:
-      - name: Check SonarCloud Task Status
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          TASK_ID: ${{ needs.Prebuild-sonarScannerCloudScan.outputs.TASK_ID }}
-        run: |
-          if [ -z "$TASK_ID" ]; then
-            echo "No Task ID found, skipping SonarCloud status check."
-            exit 1
-          fi
-          
-          echo "Checking status for Task ID: $TASK_ID"
-
-          status=""
-          timeoutMinutes=10
-          pollIntervalSeconds=15
-          elapsedTime=0
-          
-          # Poll SonarCloud until the task is completed
-          while [ "$elapsedTime" -lt $((timeoutMinutes * 60)) ]; do
-            response=$(curl -s -H "Authorization: Bearer $SONAR_TOKEN" "https://sonarcloud.io/api/ce/task?id=$TASK_ID")
-            status=$(echo $response | jq -r '.task.status')
-            echo "SonarCloud task status: $status"
-            
-            if [ "$status" == "SUCCESS" ]; then
-              echo "SonarCloud analysis completed successfully."
-              break
-            elif [ "$status" == "FAILED" ]; then
-              echo "SonarCloud analysis failed!"
-              exit 1
-            fi
-            
-            sleep $pollIntervalSeconds
-            elapsedTime=$((elapsedTime + pollIntervalSeconds))
-          done
-
-          if [ "$status" != "SUCCESS" ]; then
-            echo "SonarCloud analysis did not complete in time!"
-            exit 1
-          fi
-
-          echo "SonarCloud analysis completed. Fetching Quality Gate status..."
-
-          # Check Quality Gate status
-          response=$(curl -s -H "Authorization: Bearer $SONAR_TOKEN" "https://sonarcloud.io/api/qualitygates/project_status?analysisId=$(echo $response | jq -r '.task.analysisId')")
-          quality_gate_status=$(echo $response | jq -r '.projectStatus.status')
-          echo "SonarCloud Quality Gate Status: $quality_gate_status"
-
-          if [ "$quality_gate_status" != "OK" ]; then
-            echo "SonarCloud Quality Gate failed!"
-            exit 1
-          fi
-
-          echo "SonarCloud Quality Gate passed successfully."
 
   deploy-mysql:
     runs-on: self-hosted
@@ -385,9 +175,29 @@ jobs:
         env:
           MYSQL_POD: ${{ env.MYSQL_POD }}
 
-  deploy-app:
+  liquibase-update:
     runs-on: self-hosted
     needs: deploy-mysql
+    steps:
+      - name: test
+        run: |
+          pwd
+          ls -la
+
+      - name: Liquibase Update
+        uses: liquibase-github-actions/update@v4.30.0
+        with:
+          url: jdbc:mysql://github-mysql-service:3306/petclinic
+          username: petclinic
+          password: petclinic
+          changeLogFile: src/main/resources/liquibase/changelog.xml
+          driver: com.mysql.cj.jdbc.Driver
+          classpath: src/main/resources/mysql-connector-j-9.1.0.jar
+          logLevel: INFO
+
+  deploy-app:
+    runs-on: self-hosted
+    needs: liquibase-update
     steps:  
       - name: Deploy PetClinic
         run: kubectl apply -f github-actions-k8s/deployment.yml
@@ -411,32 +221,4 @@ jobs:
 
           echo "Final Report: $report"
           curl -X POST -H "Content-Type: application/json" -d "$report" https://httpbin.org/post
-
-  #final-report:
-  #  runs-on: self-hosted
-  #  needs: deploy-app
-  #  steps:
-  #    - name: Send Build Report
-  #      if: always()
-  #      run: |
-  #        if [[ "$BUILD_STATUS" == "Failed" ]]; then
-  #          echo "Build failed with error: $BUILD_ERROR"
-  #          # Envía el error detallado como parte del reporte
-  #          curl -X POST https://httpbin.org/post \
-  #          -H "Content-Type: application/json" \
-  #          -d "{
-  #            \"job\": \"Build\",
-  #            \"status\": \"$BUILD_STATUS\",
-  #            \"details\": \"$BUILD_ERROR\"
-  #          }"
-  #        else
-  #          echo "Build succeeded"
-  #          curl -X POST https://httpbin.org/post \
-  #          -H "Content-Type: application/json" \
-  #          -d "{
-  #            \"job\": \"Build\",
-  #            \"status\": \"$BUILD_STATUS\",
-  #            \"details\": \"Build completed successfully\"
-  #          }"
-  #        fi
 
