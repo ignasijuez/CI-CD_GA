@@ -9,7 +9,7 @@
         <sql>
             SET @next_id = (SELECT COALESCE(MAX(id), 0) + 1 FROM vets);
             INSERT INTO vets (id, first_name, last_name) 
-            VALUES (@next_id, 'Liquibase', 'Github Test 1');
+            VALUES (@next_id, 'Liquibase', 'Github Test 2');
         </sql>
     </changeSet>
 
