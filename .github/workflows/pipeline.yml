@@ -198,7 +198,7 @@ jobs:
           name: liquibase-files
 
       - name: test2
-        run: ls -la
+        run: ls -la liquibase/
 
       - name: Liquibase Update
         uses: liquibase-github-actions/update@v4.30.0
