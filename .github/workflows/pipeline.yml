@@ -186,6 +186,9 @@ jobs:
             --classpath=src/main/resources/mysql-connector-j-9.1.0.jar \
             update
 
+      - name: Update app
+        run: kubectl delete pod -l app=github-petclinic-pod
+
   deploy-app:
     runs-on: self-hosted
     needs: liquibase-update2
