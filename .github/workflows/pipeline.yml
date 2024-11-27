@@ -199,7 +199,7 @@ jobs:
 
   Check-SonarCloud-Results:
     runs-on: self-hosted
-    needs: [docker-build-push, Prebuild-sonarScannerCloudScan]
+    needs: [docker-build-push, Prebuild-sonarScannerCloudScan, Prebuild-Dependency-Analysis]
     steps:
       - name: Check SonarCloud Task Status
         env:
@@ -257,7 +257,7 @@ jobs:
 
   deploy-mysql:
     runs-on: self-hosted
-    needs: [setup2, docker-build-push]
+    needs: [setup2, Check-SonarCloud-Results]
     steps:
       - name: Deploy MySQL
         run: kubectl apply -f github-actions-k8s/mysql-deployment.yml
