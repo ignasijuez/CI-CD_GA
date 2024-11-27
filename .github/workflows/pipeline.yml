@@ -197,6 +197,9 @@ jobs:
         with:
           name: liquibase-files
 
+      - name: test1
+        run: ls -la
+
       - name: test2
         run: ls -la liquibase/
 
