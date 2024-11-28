@@ -307,6 +307,9 @@ jobs:
     runs-on: self-hosted
     needs: deploy-mysql
     steps:
+      - name: Portforwards db
+        run: kubectl port-forward svc/github-mysql-service 3306:3306
+        
       - name: Run Liquibase Update
         run: |
           liquibase \
