@@ -51,6 +51,9 @@ jobs:
       - name: PreCache
         run: ls -R
 
+      - name: PreCache2
+        run: pwd
+
       # Cache Maven dependencies
       - name: Cache Maven packages
         uses: actions/cache@v2
