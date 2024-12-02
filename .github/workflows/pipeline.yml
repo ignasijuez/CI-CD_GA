@@ -69,21 +69,35 @@ jobs:
     outputs:
       TASK_ID: ${{ steps.extract_task_id.outputs.task_id }} # Define el output
     steps:
-      - name: Run SonarScanner
+      - name: Analyze with SonarCloud
+        uses: sonarsource/sonarcloud-github-action@v3.1.0 
         env:
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-            SONAR_PROJECT_KEY: ignasijuez_github
-            SONAR_ORGANIZATION: ignasijuez
-        run: |
-          sonar-scanner \
-            -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-            -Dsonar.organization=${SONAR_ORGANIZATION} \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.login=${SONAR_TOKEN} \
-            -Dsonar.sources=src \
-            -Dsonar.exclusions=**/*.java \
-            -Dsonar.java.binaries=none \
+        with:
+          args: >
+            -Dsonar.organization=ignasijuez
+            -Dsonar.projectKey=ignasijuez_github
+            -Dsonar.sources=src
+            -Dsonar.exclusions=**/*.java
+            -Dsonar.java.binaries=none
             -Dsonar.qualitygate.wait=false
+
+
+      #- name: Run SonarScanner
+      #  env:
+      #      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #      SONAR_PROJECT_KEY: ignasijuez_github
+      #      SONAR_ORGANIZATION: ignasijuez
+      #  run: |
+      #    sonar-scanner \
+      #      -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+      #      -Dsonar.organization=${SONAR_ORGANIZATION} \
+      #      -Dsonar.host.url=https://sonarcloud.io \
+      #      -Dsonar.login=${SONAR_TOKEN} \
+      #      -Dsonar.sources=src \
+      #      -Dsonar.exclusions=**/*.java \
+      #      -Dsonar.java.binaries=none \
+      #      -Dsonar.qualitygate.wait=false
 
       #- name: Locate report-task.txt
       #  run: find . -name "report-task.txt"
