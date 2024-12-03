@@ -44,6 +44,9 @@ jobs:
       - name: List workspace contents
         run: ls -R
 
+      - name: List workspace contents2
+        run: pwd
+
   setup:
     runs-on: self-hosted
     needs: checkout
