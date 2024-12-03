@@ -165,7 +165,7 @@ jobs:
 
   setup2:
     runs-on: self-hosted
-    needs: setup
+    needs: build
     steps:
       - name: home
         run: |
