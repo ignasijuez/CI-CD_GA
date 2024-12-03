@@ -81,8 +81,8 @@ jobs:
           fi
           mvn -version
             
-            - name: Verify Maven
-              run: mvn -version
+      - name: Verify Maven
+        run: mvn -version
 
   Prebuild-sonarScannerCloudScan:
     runs-on: self-hosted
