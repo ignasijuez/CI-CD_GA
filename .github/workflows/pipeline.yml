@@ -38,7 +38,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4 #predefined action from the marketplace
         with: 
-          path: /runner/shared-workspace/
+          path: /runner/_work/shared-repo
           repository: ${{ inputs.REPO_URL }}
           ref: ${{ inputs.BRANCH }}
           
@@ -53,9 +53,7 @@ jobs:
     needs: checkout
     steps:
       - name: PreCache
-        run: |
-          cd /runner/shared-workspace/
-          ls -R
+        run: ls -R /runner/_work/shared-repo
 
       - name: PreCache2
         run: pwd
@@ -170,7 +168,6 @@ jobs:
         id: build_step
         run: |
           ls -la
-          cd /runner/shared-workspace/
           BUILD_OUTPUT=$(mvn spring-javaformat:apply && mvn clean package 2>&1)
           echo "$BUILD_OUTPUT" > build_error.log
           echo "OUTPUTTTTTTTT: $BUILD_OUTPUT"
