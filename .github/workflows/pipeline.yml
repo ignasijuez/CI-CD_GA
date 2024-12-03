@@ -64,6 +64,9 @@ jobs:
       - name: PreCache2
         run: pwd
 
+      - name: Verify Maven
+        run: mvn -version
+
       # Cache Maven dependencies
       - name: Cache Maven packages
         uses: actions/cache@v2
@@ -72,17 +75,8 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-
-      - name: Install Maven
-        run: |
-          if [ ! -f /usr/share/maven/bin/mvn ]; then
-            curl -fsSL https://apache.osuosl.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz | tar -xz -C /usr/share/
-            ln -s /usr/share/apache-maven-3.9.9/bin/mvn /usr/bin/mvn
-          fi
-          mvn -version
             
-      - name: Verify Maven
-        run: mvn -version
+      
 
   Prebuild-sonarScannerCloudScan:
     runs-on: self-hosted
