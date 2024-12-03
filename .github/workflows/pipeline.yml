@@ -163,17 +163,17 @@ jobs:
           mvn spring-javaformat:apply
           mvn clean package
 
-  setup2:
-    runs-on: self-hosted
-    needs: build
-    steps:
-      - name: home
-        run: |
-          echo $HOME
-          ls -la
-
-      - name: Setup Kubernetes
-        uses: ./.github/actions/setup-k8s
+  #setup2:
+  #  runs-on: self-hosted
+  #  needs: build
+  #  steps:
+  #    - name: home
+  #      run: |
+  #        echo $HOME
+  #        ls -la
+  #
+  #    - name: Setup Kubernetes
+  #      uses: ./.github/actions/setup-k8s
 
   docker-login:
     needs: build
@@ -191,6 +191,8 @@ jobs:
     steps:
       #- name: Verify DOCKER_IMAGE value
       #  run: echo "DOCKER_IMAGE is set to ${{ inputs.DOCKER_IMAGE }}"
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
@@ -201,7 +203,7 @@ jobs:
 
   deploy-mysql:
     runs-on: self-hosted
-    needs: [setup2, docker-build-push]
+    needs: [docker-build-push]
     steps:
       - name: Deploy MySQL
         run: kubectl apply -f github-actions-k8s/mysql-deployment.yml
