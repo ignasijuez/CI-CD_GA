@@ -38,11 +38,13 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4 #predefined action from the marketplace
         with: 
+          path: /runner/_work/shared-repo # Ubicación compartida
           repository: ${{ inputs.REPO_URL }}
           ref: ${{ inputs.BRANCH }}
+          
 
       - name: List workspace contents1
-        run: ls -R
+        run: ls -R /runner/_work/shared-repo
 
       - name: List workspace contents2
         run: pwd
@@ -52,7 +54,7 @@ jobs:
     needs: checkout
     steps:
       - name: PreCache
-        run: ls -R
+        run: ls -R /runner/_work/shared-repo
 
       - name: PreCache2
         run: pwd
