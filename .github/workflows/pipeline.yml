@@ -33,28 +33,15 @@ jobs:
           repository: ${{ inputs.REPO_URL }}
           ref: ${{ inputs.BRANCH }}
           
-      - name: List workspace contents1
-        run: ls -R
-
-      - name: List workspace contents2
-        run: pwd
-
-      - name: Copy to shared workspace
-        run: |
-          cp -r /runner/_work/CICD_GA/CICD_GA/* /runner/shared-workspace/
-      
-      - name: checking
-        run: ls -R /runner/shared-workspace
+      - name: List repo contents
+        run: ls -R /runner/_work/CICD_GA/CICD_GA
 
   setup:
     runs-on: self-hosted
     needs: checkout
     steps:
-      - name: PreCache
-        run: ls -R /runner/shared-workspace
-
-      - name: List Maven cache
-        run: ls -la /home/runner/.m2/repository 
+      - name: List repo contents
+        run: ls -R /runner/_work/CICD_GA/CICD_GA
 
       - name: PreCache2
         run: pwd
