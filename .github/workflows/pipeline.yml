@@ -64,17 +64,17 @@ jobs:
       - name: PreCache2
         run: pwd
 
-      - name: Verify Maven
+      - name: Verify Maven 2
         run: mvn -version
 
       # Cache Maven dependencies
-      - name: Cache Maven packages
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+      #- name: Cache Maven packages
+      #  uses: actions/cache@v2
+      #  with:
+      #    path: ~/.m2/repository
+      #    key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+      #    restore-keys: |
+      #      ${{ runner.os }}-maven-
             
       
 
