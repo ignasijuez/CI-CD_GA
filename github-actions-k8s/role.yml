@@ -4,9 +4,6 @@ metadata:
   namespace: actions-runner-system
   name: actions-runner-role
 rules:
-  - apiGroups: [""]
-    resources: ["pods", "services", "persistentvolumeclaims"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: ["apps"]
-    resources: ["deployments"]
-    verbs: ["get", "list", "watch", "create", "delete", "update"]
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["*"]
