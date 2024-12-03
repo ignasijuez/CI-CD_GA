@@ -38,7 +38,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4 #predefined action from the marketplace
         with: 
-          path: /runner/_work/shared-repo
+          path: /runner/_work/CICD_GA/CICD_GA/shared-repo
           repository: ${{ inputs.REPO_URL }}
           ref: ${{ inputs.BRANCH }}
           
@@ -47,6 +47,11 @@ jobs:
 
       - name: List workspace contents2
         run: pwd
+
+      - name: Copy to shared workspace
+        run: |
+          cp -r /runner/_work/CICD_GA/CICD_GA/* /runner/shared-workspace/
+          ls -R /runner
 
   setup:
     runs-on: self-hosted
