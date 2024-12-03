@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: github-actions-runner
+  namespace: github
+  labels:
+    app: github-actions-runner
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: github-actions-runner
+  template:
+    metadata:
+      labels:
+        app: github-actions-runner
+    spec:
+      containers:
+      - name: github-actions-runner
+        image: juezignasi/github-actions-runner:latest
+        imagePullPolicy: Always
+        env:
+        - name: RUNNER_NAME
+          value: "k8s-runner"
+        - name: REPO_URL
+          value: "https://github.com/ignasijuez/CICD_GA"
+        - name: RUNNER_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: github-runner-token
+              key: token
+        volumeMounts:
+        - mountPath: /actions-runner # Directorio del runner
+          name: runner-data
+        - name: docker-socket
+          mountPath: /var/run/docker.sock
+      volumes:
+      - name: runner-data
+        persistentVolumeClaim:
+          claimName: runner-pvc # Referencia al PVC creado
+      - name: docker-socket
+        hostPath:
+          path: /var/run/docker.sock

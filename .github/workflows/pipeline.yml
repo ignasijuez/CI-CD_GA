@@ -173,25 +173,7 @@ jobs:
   #        ls -la
   #
   #    - name: Setup Kubernetes
-  #      uses: ./.github/actions/setup-k8s
-
-  #docker-login:
-  #  needs: build
-  #  uses: ./.github/workflows/reusable-docker-login.yml
-    #with:
-    #  DOCKER_IMAGE: "juezignasi/ga-app"
-    #  IMAGE_TAG: "latest"
-  #  secrets:
-  #    DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-  #    DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-
-  docker-login:
-    runs-on: self-hosted
-    needs: build
-    steps:
-      - name: asd
-        run: ls
-      
+  #      uses: ./.github/actions/setup-k8s  
 
   docker-build-push:
     runs-on: self-hosted
@@ -290,7 +272,7 @@ jobs:
 
   final-report:
     runs-on: self-hosted
-    needs: [checkout, setup, build, docker-login, docker-build-push, deploy-mysql, deploy-app]
+    needs: [checkout, setup, build, docker-build-push, deploy-mysql, deploy-app]
     if: always()
     steps:
       - name: Generate Final Report

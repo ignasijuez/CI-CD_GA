@@ -1,0 +1,22 @@
+<settings>
+  <profiles>
+    <profile>
+      <id>allow-snapshots</id>
+      <repositories>
+        <repository>
+          <id>spring-snapshots</id>
+          <url>https://repo.spring.io/snapshot</url>
+          <releases>
+            <enabled>false</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+  <activeProfiles>
+    <activeProfile>allow-snapshots</activeProfile>
+  </activeProfiles>
+</settings>

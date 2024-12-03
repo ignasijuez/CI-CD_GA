@@ -1,0 +1,24 @@
+apiVersion: actions.summerwind.dev/v1alpha1
+kind: RunnerDeployment
+metadata:
+  name: example-runnerdeploy
+  namespace: actions-runner-system
+spec:
+  replicas: 1
+  template:
+    spec:
+      repository: ignasijuez/CICD_GA
+      image: juezignasi/github-actions-runner:latest
+      env:
+        - name: RUNNER_GROUP
+          value: "Default" # Opcional: especifica el grupo del runner si usas uno
+      volumeMounts:
+        - name: shared-workspace
+          mountPath: /runner/_work/CICD_GA/CICD_GA
+      volumes:
+        - name: shared-workspace
+          persistentVolumeClaim:
+            claimName: work-pvc
+        #- name: maven-bin
+        #  persistentVolumeClaim:
+        #    claimName: maven-pvc

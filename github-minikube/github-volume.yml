@@ -1,0 +1,13 @@
+#Github actions runner persistente inside cluster
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: runner-pvc
+  namespace: github
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: standard
