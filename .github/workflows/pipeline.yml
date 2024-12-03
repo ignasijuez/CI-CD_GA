@@ -40,14 +40,8 @@ jobs:
     runs-on: self-hosted
     needs: checkout
     steps:
-      - name: List repo contents
-        run: ls -R /runner/_work/CICD_GA/CICD_GA
-
-      - name: PreCache2
-        run: pwd
-
-      - name: Verify Maven 2
-        run: mvn -version
+      - name: List Maven dependencies
+        run: ls -R ~/.m2/repository
 
       # Cache Maven dependencies
       #- name: Cache Maven packages
@@ -156,9 +150,6 @@ jobs:
   build:
       runs-on: self-hosted
       needs: setup
-      defaults:
-        run:
-          working-directory: /runner/shared-workspace
       outputs:
         BUILD_STATUS: ${{ steps.set_build_status.outputs.BUILD_STATUS }}
         BUILD_ERROR: ${{ steps.set_build_status.outputs.BUILD_ERROR }}
