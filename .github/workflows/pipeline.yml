@@ -52,7 +52,7 @@ jobs:
     needs: checkout
     steps:
       - name: PreCache
-        run: ls -R /runner/_work/shared-repo
+        run: ls -R
 
       - name: PreCache2
         run: pwd
