@@ -46,7 +46,6 @@ jobs:
       - name: checking
         run: ls -R /runner/shared-workspace
 
-
   setup:
     runs-on: self-hosted
     needs: checkout
