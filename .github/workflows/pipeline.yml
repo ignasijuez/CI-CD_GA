@@ -54,7 +54,7 @@ jobs:
         run: ls -R /runner/shared-workspace
 
       - name: List Maven cache
-        run: ls -la /runner/.m2/repository 
+        run: ls -la /home/runner/.m2/repository 
 
       - name: PreCache2
         run: pwd
