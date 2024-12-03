@@ -41,7 +41,7 @@ jobs:
           repository: ${{ inputs.REPO_URL }}
           ref: ${{ inputs.BRANCH }}
 
-      - name: List workspace contents
+      - name: List workspace contents1
         run: ls -R
 
       - name: List workspace contents2
