@@ -51,14 +51,14 @@ jobs:
       - name: Copy to shared workspace
         run: |
           cp -r /runner/_work/CICD_GA/CICD_GA/* /runner/shared-workspace/
-          ls -R /runner
+          ls -R /runner/shared-workspace
 
   setup:
     runs-on: self-hosted
     needs: checkout
     steps:
       - name: PreCache
-        run: ls -R /runner/
+        run: ls -R /runner/shared-workspace
 
       - name: PreCache2
         run: pwd
