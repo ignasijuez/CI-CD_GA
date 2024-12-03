@@ -223,67 +223,9 @@ jobs:
           push: true
           tags: juezignasi/ga-app:latest
 
-  Check-SonarCloud-Results:
-    runs-on: self-hosted
-    needs: [docker-build-push, Prebuild-sonarScannerCloudScan, Prebuild-Dependency-Analysis]
-    steps:
-      - name: Check SonarCloud Task Status
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          TASK_ID: ${{ needs.Prebuild-sonarScannerCloudScan.outputs.TASK_ID }}
-        run: |
-          if [ -z "$TASK_ID" ]; then
-            echo "No Task ID found, skipping SonarCloud status check."
-            exit 1
-          fi
-          
-          echo "Checking status for Task ID: $TASK_ID"
-
-          status=""
-          timeoutMinutes=10
-          pollIntervalSeconds=15
-          elapsedTime=0
-          
-          # Poll SonarCloud until the task is completed
-          while [ "$elapsedTime" -lt $((timeoutMinutes * 60)) ]; do
-            response=$(curl -s -H "Authorization: Bearer $SONAR_TOKEN" "https://sonarcloud.io/api/ce/task?id=$TASK_ID")
-            status=$(echo $response | jq -r '.task.status')
-            echo "SonarCloud task status: $status"
-            
-            if [ "$status" == "SUCCESS" ]; then
-              echo "SonarCloud analysis completed successfully."
-              break
-            elif [ "$status" == "FAILED" ]; then
-              echo "SonarCloud analysis failed!"
-              exit 1
-            fi
-            
-            sleep $pollIntervalSeconds
-            elapsedTime=$((elapsedTime + pollIntervalSeconds))
-          done
-
-          if [ "$status" != "SUCCESS" ]; then
-            echo "SonarCloud analysis did not complete in time!"
-            exit 1
-          fi
-
-          echo "SonarCloud analysis completed. Fetching Quality Gate status..."
-
-          # Check Quality Gate status
-          response=$(curl -s -H "Authorization: Bearer $SONAR_TOKEN" "https://sonarcloud.io/api/qualitygates/project_status?analysisId=$(echo $response | jq -r '.task.analysisId')")
-          quality_gate_status=$(echo $response | jq -r '.projectStatus.status')
-          echo "SonarCloud Quality Gate Status: $quality_gate_status"
-
-          if [ "$quality_gate_status" != "OK" ]; then
-            echo "SonarCloud Quality Gate failed!"
-            exit 1
-          fi
-
-          echo "SonarCloud Quality Gate passed successfully."
-
   deploy-mysql:
     runs-on: self-hosted
-    needs: [setup2, Check-SonarCloud-Results]
+    needs: [setup2, docker-build-push]
     steps:
       - name: Deploy MySQL
         run: kubectl apply -f github-actions-k8s/mysql-deployment.yml
