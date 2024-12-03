@@ -32,16 +32,17 @@ jobs:
         with: 
           repository: ${{ inputs.REPO_URL }}
           ref: ${{ inputs.BRANCH }}
+          path: /runner/shared-workspace
           
       - name: List repo contents
-        run: ls -R /runner/_work/CICD_GA/CICD_GA
+        run: ls -R /runner/shared-workspace
 
   setup:
     runs-on: self-hosted
     needs: checkout
     steps:
       - name: List repo contents
-        run: ls -R /runner/_work/CICD_GA/CICD_GA
+        run: ls -R /runner/shared-workspace
 
       - name: PreCache2
         run: pwd
