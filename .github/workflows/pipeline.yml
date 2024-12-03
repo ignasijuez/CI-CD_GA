@@ -44,7 +44,7 @@ jobs:
           cp -r /runner/_work/CICD_GA/CICD_GA/* /runner/shared-workspace/
       
       - name: checking
-        run: ls -R /home/runner/shared-workspace
+        run: ls -R /runner/shared-workspace
 
   setup:
     runs-on: self-hosted
@@ -54,7 +54,7 @@ jobs:
         run: ls -R /runner/shared-workspace
 
       - name: List Maven cache
-        run: ls -la /home/runner 
+        run: ls -la /runner/.m2/repository 
 
       - name: PreCache2
         run: pwd
