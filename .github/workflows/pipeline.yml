@@ -26,14 +26,6 @@ jobs:
   checkout: 
     runs-on: self-hosted
     steps:
-      - name: Check hour and fail if inside time range
-        run: |
-          currentHour=$(date +%H)
-          if [ "$currentHour" -ge 2 ] && [ "$currentHour" -lt 3 ]; then
-            echo "El pipeline se termina porque no es la hora adecuada"
-            exit 1
-          fi
-
       # option 1
       - name: checkout
         uses: actions/checkout@v4 #predefined action from the marketplace
@@ -60,6 +52,9 @@ jobs:
     steps:
       - name: PreCache
         run: ls -R /runner/shared-workspace
+
+      - name: List Maven cache
+        run: ls -R ~/.m2/repository
 
       - name: PreCache2
         run: pwd
@@ -184,8 +179,8 @@ jobs:
       - name: Build
         run: |
           echo 'Clean and package the application'
-          mvn -o spring-javaformat:apply
-          mvn -o clean package
+          mvn spring-javaformat:apply
+          mvn clean package
 
   setup2:
     runs-on: self-hosted
