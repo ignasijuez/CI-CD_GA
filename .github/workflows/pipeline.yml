@@ -50,7 +50,9 @@ jobs:
       - name: Copy to shared workspace
         run: |
           cp -r /runner/_work/CICD_GA/CICD_GA/* /runner/shared-workspace/
-          ls -R /runner/shared-workspace
+      
+      - name: checking
+        run: ls -R /runner/shared-workspace
 
   setup:
     runs-on: self-hosted
