@@ -159,8 +159,8 @@ jobs:
       - name: Build
         run: |
           echo 'Clean and package the application'
-          mvn spring-javaformat:apply
-          mvn clean package
+          mvn -o spring-javaformat:apply
+          mvn -o clean package
 
   setup2:
     runs-on: self-hosted
