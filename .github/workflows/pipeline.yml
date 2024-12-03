@@ -177,7 +177,7 @@ jobs:
 
   docker-build-push:
     runs-on: self-hosted
-    needs: docker-login
+    needs: build
     steps:
       - name: Log in to DockerHub
         uses: docker/login-action@v2
