@@ -38,7 +38,6 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4 #predefined action from the marketplace
         with: 
-          path: /runner/_work/CICD_GA/CICD_GA/shared-repo
           repository: ${{ inputs.REPO_URL }}
           ref: ${{ inputs.BRANCH }}
           
