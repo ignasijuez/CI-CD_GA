@@ -78,6 +78,10 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: maven
+      
+      - name: Verify Maven
+        run: mvn -version
 
   Prebuild-sonarScannerCloudScan:
     runs-on: self-hosted
@@ -88,6 +92,9 @@ jobs:
     outputs:
       TASK_ID: ${{ steps.extract_task_id.outputs.task_id }} # Define el output
     steps:
+      - name: Verify Maven
+        run: mvn -version
+        
       - name: Analyze with SonarCloud
         uses: sonarsource/sonarcloud-github-action@v3.1.0 
         env:
