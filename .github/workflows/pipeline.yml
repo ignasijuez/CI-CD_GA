@@ -78,30 +78,30 @@ jobs:
             
       
 
-  Prebuild-sonarScannerCloudScan:
-    runs-on: self-hosted
-    needs: setup
-    defaults:
-      run:
-        working-directory: /runner/shared-workspace
-    outputs:
-      TASK_ID: ${{ steps.extract_task_id.outputs.task_id }} # Define el output
-    steps:
-      - name: Verify Maven
-        run: mvn -version
+  #Prebuild-sonarScannerCloudScan:
+  #  runs-on: self-hosted
+  #  needs: setup
+  #  defaults:
+  #    run:
+  #      working-directory: /runner/shared-workspace
+  #  outputs:
+  #    TASK_ID: ${{ steps.extract_task_id.outputs.task_id }} # Define el output
+  #  steps:
+  #    - name: Verify Maven
+  #      run: mvn -version
 
-      - name: Analyze with SonarCloud
-        uses: sonarsource/sonarcloud-github-action@v3.1.0 
-        env:
-            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.organization=ignasijuez
-            -Dsonar.projectKey=ignasijuez_github
-            -Dsonar.sources=src
-            -Dsonar.exclusions=**/*.java
-            -Dsonar.java.binaries=none
-            -Dsonar.qualitygate.wait=false
+  #    - name: Analyze with SonarCloud
+  #      uses: sonarsource/sonarcloud-github-action@v3.1.0 
+  #      env:
+  #          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #      with:
+  #        args: >
+  #          -Dsonar.organization=ignasijuez
+  #          -Dsonar.projectKey=ignasijuez_github
+  #          -Dsonar.sources=src
+  #          -Dsonar.exclusions=**/*.java
+  #          -Dsonar.java.binaries=none
+  #          -Dsonar.qualitygate.wait=false
 
 
       #- name: Run SonarScanner
@@ -123,53 +123,53 @@ jobs:
       #- name: Locate report-task.txt
       #  run: find . -name "report-task.txt"
 
-      - name: Extract SonarCloud Task ID
-        id: extract_task_id
-        run: |
-          if [ ! -f .scannerwork/report-task.txt ]; then
-            echo "SonarCloud report-task.txt not found!"
-            exit 1
-          fi
-          task_id=$(grep 'ceTaskId' .scannerwork/report-task.txt | cut -d '=' -f 2)
-          echo "Task ID (local): $task_id"
-          echo "::set-output name=task_id::$task_id"
-        continue-on-error: false
+  #    - name: Extract SonarCloud Task ID
+  #      id: extract_task_id
+  #      run: |
+  #        if [ ! -f .scannerwork/report-task.txt ]; then
+  #          echo "SonarCloud report-task.txt not found!"
+  #          exit 1
+  #        fi
+  #        task_id=$(grep 'ceTaskId' .scannerwork/report-task.txt | cut -d '=' -f 2)
+  #        echo "Task ID (local): $task_id"
+  #        echo "::set-output name=task_id::$task_id"
+  #      continue-on-error: false
 
-  Prebuild-Dependency-Analysis:
-    runs-on: self-hosted
-    needs: setup
-    defaults:
-      run:
-        working-directory: /runner/shared-workspace
-    steps:
-      - name: Run OWASP Dependency Check
-        id: dependency_check
-        run: |
-          mvn org.owasp:dependency-check-maven:check \
-              -Dformat=HTML \
-              -DautoUpdate=false \
-              -Dexcludes=com.h2database:h2 \
-              -DfailBuildOnCVSS=1.0 \
-              -DoutputDirectory=dependency-check-report #|| exit_code=$?
-          #echo "exit_code=$exit_code" >> $GITHUB_ENV
-        continue-on-error: true
+  #Prebuild-Dependency-Analysis:
+  #  runs-on: self-hosted
+  #  needs: setup
+  #  defaults:
+  #    run:
+  #      working-directory: /runner/shared-workspace
+  #  steps:
+  #    - name: Run OWASP Dependency Check
+  #      id: dependency_check
+  #      run: |
+  #        mvn org.owasp:dependency-check-maven:check \
+  #            -Dformat=HTML \
+  #            -DautoUpdate=false \
+  #            -Dexcludes=com.h2database:h2 \
+  #            -DfailBuildOnCVSS=1.0 \
+  #            -DoutputDirectory=dependency-check-report #|| exit_code=$?
+  #        #echo "exit_code=$exit_code" >> $GITHUB_ENV
+  #      continue-on-error: true
 
-      - name: Upload Dependency-Check Report
-        if: always() # Esto asegura que el informe se suba incluso si el análisis falla
-        uses: actions/upload-artifact@v3
-        with:
-          name: dependency-check-report
-          path: dependency-check-report/
+  #    - name: Upload Dependency-Check Report
+  #      if: always() # Esto asegura que el informe se suba incluso si el análisis falla
+  #      uses: actions/upload-artifact@v3
+  #      with:
+  #        name: dependency-check-report
+  #        path: dependency-check-report/
       
       # Determine Dependency-Check Result
-      - name: Determine Dependency Check Result
-        run: |
-          if [ "${{ env.exit_code }}" -ne 0 ]; then
-            echo "Dependency validation failed. Vulnerabilities detected!"
-            echo "UNSTABLE: Dependency validation did not pass."
-          else
-            echo "STABLE: Dependency validation passed successfully."
-          fi
+  #    - name: Determine Dependency Check Result
+  #      run: |
+  #        if [ "${{ env.exit_code }}" -ne 0 ]; then
+  #          echo "Dependency validation failed. Vulnerabilities detected!"
+  #          echo "UNSTABLE: Dependency validation did not pass."
+  #        else
+  #          echo "STABLE: Dependency validation passed successfully."
+  #        fi
 
   build:
       runs-on: self-hosted
