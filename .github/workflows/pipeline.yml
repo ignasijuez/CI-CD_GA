@@ -69,13 +69,12 @@ jobs:
     steps:
       - name: Verify Maven
         run: mvn -version
-      # can also use mvn sonar:sonar
-      
+
       - name: Run SonarScanner
         env:
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          sonar-scanner \
+          mvn sonar:sonar \
             -Dsonar.projectKey=ignasijuez_github \
             -Dsonar.organization=ignasijuez \
             -Dsonar.host.url=https://sonarcloud.io \
