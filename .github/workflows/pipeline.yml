@@ -104,7 +104,7 @@ jobs:
 
   Prebuild-Dependency-Analysis:
     runs-on: self-hosted
-    needs: [setup, Prebuild-sonarScannerCloudScan]
+    needs: setup
     steps:
       - name: Run OWASP Dependency Check
         id: dependency_check
@@ -138,7 +138,7 @@ jobs:
 
   build:
       runs-on: self-hosted
-      needs: [setup, Prebuild-sonarScannerCloudScan]
+      needs: setup
       outputs:
         BUILD_STATUS: ${{ steps.set_build_status.outputs.BUILD_STATUS }}
         BUILD_ERROR: ${{ steps.set_build_status.outputs.BUILD_ERROR }}
