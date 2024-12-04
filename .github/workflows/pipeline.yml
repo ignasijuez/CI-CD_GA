@@ -93,12 +93,12 @@ jobs:
       - name: Extract SonarCloud Task ID
         id: extract_task_id
         run: |
-          if [ ! -f .scannerwork/report-task.txt ]; then
+          if [ ! -f ./target/sonar/report-task.txt ]; then
             echo "SonarCloud report-task.txt not found!"
             exit 1
           fi
-          task_id=$(grep 'ceTaskId' .scannerwork/report-task.txt | cut -d '=' -f 2)
-          echo "Task ID (local): $task_id"
+          task_id=$(grep 'ceTaskId' ./target/sonar/report-task.txt | cut -d '=' -f 2)
+          echo "Task ID: $task_id"
           echo "::set-output name=task_id::$task_id"
         continue-on-error: false
 
