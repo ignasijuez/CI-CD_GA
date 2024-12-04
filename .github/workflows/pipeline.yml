@@ -34,8 +34,8 @@ jobs:
       #      exit 1
       #    fi
       
-      - name: Verificar cache Maven
-        run: ls -R ~/.m2/repository
+      - name: Verificar tamaño del directorio Maven
+        run: du -sh ~/.m2/repository
 
       - name: checkout
         uses: actions/checkout@v4 #predefined action from the marketplace
@@ -324,8 +324,8 @@ jobs:
     needs: [checkout, setup, build, docker-build-push, deploy-mysql, deploy-app]
     if: always()
     steps:
-      - name: Verificar cache Maven2
-        run: ls -R ~/.m2/repository
+      - name: Verificar tamaño del directorio Maven2
+        run: du -sh ~/.m2/repository
 
       - name: Generate Final Report
         run: |

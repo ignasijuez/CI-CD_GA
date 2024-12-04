@@ -5,7 +5,13 @@ USER root
 
 # Actualizar repositorios e instalar herramientas básicas
 RUN apt-get update && \
-    apt-get install -y openjdk-17-jdk maven curl unzip nodejs && \
+    apt-get install -y openjdk-17-jdk maven curl unzip && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Instalar la última versión LTS de Node.js desde NodeSource
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
