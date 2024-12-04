@@ -69,7 +69,8 @@ jobs:
     steps:
       - name: Verify Maven
         run: mvn -version
-
+      # can also use mvn sonar:sonar
+      
       - name: Run SonarScanner
         env:
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
