@@ -70,35 +70,19 @@ jobs:
       - name: Verify Maven
         run: mvn -version
 
-      - name: Analyze with SonarCloud
-        uses: sonarsource/sonarcloud-github-action@v3.1.0 
+      - name: Run SonarScanner
         env:
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.organization=ignasijuez
-            -Dsonar.projectKey=ignasijuez_github
-            -Dsonar.sources=src
-            -Dsonar.exclusions=**/*.java
-            -Dsonar.java.binaries=none
+        run: |
+          mvn sonar:sonar \
+            -Dsonar.projectKey=ignasijuez_github \
+            -Dsonar.organization=ignasijuez \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=${SONAR_TOKEN} \
+            -Dsonar.sources=src \
+            -Dsonar.exclusions=**/*.java \
+            -Dsonar.java.binaries=none \
             -Dsonar.qualitygate.wait=false
-
-
-      #- name: Run SonarScanner
-      #  env:
-      #      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #      SONAR_PROJECT_KEY: ignasijuez_github
-      #      SONAR_ORGANIZATION: ignasijuez
-      #  run: |
-      #    sonar-scanner \
-      #      -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-      #      -Dsonar.organization=${SONAR_ORGANIZATION} \
-      #      -Dsonar.host.url=https://sonarcloud.io \
-      #      -Dsonar.login=${SONAR_TOKEN} \
-      #      -Dsonar.sources=src \
-      #      -Dsonar.exclusions=**/*.java \
-      #      -Dsonar.java.binaries=none \
-      #      -Dsonar.qualitygate.wait=false
 
       - name: Locate report-task.txt
         run: find . -name "report-task.txt"
