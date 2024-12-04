@@ -1,0 +1,14 @@
+apiVersion: actions.summerwind.dev/v1alpha1
+kind: HorizontalRunnerAutoscaler
+metadata:
+  name: example-autoscaler
+  namespace: actions-runner-system
+spec:
+  scaleTargetRef:
+    name: example-runnerdeploy # Nombre de tu RunnerDeployment
+  minReplicas: 1               # Mínimo número de runners
+  maxReplicas: 5               # Máximo número de runners
+  metrics:
+    - type: TotalNumberOfQueuedAndInProgressWorkflowRuns
+      repositoryNames:
+        - ignasijuez/CICD_GA   # Repositorio para el que escalará
