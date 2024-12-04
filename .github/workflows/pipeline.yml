@@ -85,7 +85,8 @@ jobs:
             -Dsonar.sources=src \
             -Dsonar.exclusions=**/*.java \
             -Dsonar.java.binaries=none \
-            -Dsonar.qualitygate.wait=false
+            -Dsonar.qualitygate.wait=false \
+            -X
 
       - name: Locate report-task.txt
         run: find . -name "report-task.txt"
