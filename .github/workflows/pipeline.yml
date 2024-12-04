@@ -105,9 +105,6 @@ jobs:
   Prebuild-Dependency-Analysis:
     runs-on: self-hosted
     needs: [setup, Prebuild-sonarScannerCloudScan]
-    defaults:
-      run:
-        working-directory: /runner/shared-workspace
     steps:
       - name: Run OWASP Dependency Check
         id: dependency_check
@@ -117,7 +114,7 @@ jobs:
               -DautoUpdate=false \
               -Dexcludes=com.h2database:h2 \
               -DfailBuildOnCVSS=1.0 \
-              -DoutputDirectory=dependency-check-report #|| exit_code=$?
+              -DoutputDirectory=dependency-check-report || exit_code=$?
           #echo "exit_code=$exit_code" >> $GITHUB_ENV
         continue-on-error: true
 
