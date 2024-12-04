@@ -34,6 +34,9 @@ jobs:
       #      exit 1
       #    fi
       
+      - name: Verificar cache Maven
+        run: ls -R ~/.m2/repository
+
       - name: checkout
         uses: actions/checkout@v4 #predefined action from the marketplace
         with: 
@@ -321,6 +324,9 @@ jobs:
     needs: [checkout, setup, build, docker-build-push, deploy-mysql, deploy-app]
     if: always()
     steps:
+      - name: Verificar cache Maven2
+        run: ls -R ~/.m2/repository
+
       - name: Generate Final Report
         run: |
           report="{\"jobs\": []}"
