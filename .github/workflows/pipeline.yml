@@ -74,11 +74,11 @@ jobs:
         env:
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          mvn sonar:sonar \
+          sonar-scanner \
             -Dsonar.projectKey=ignasijuez_github \
             -Dsonar.organization=ignasijuez \
             -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.login=${SONAR_TOKEN} \
+            -Dsonar.token=${SONAR_TOKEN} \
             -Dsonar.sources=src \
             -Dsonar.exclusions=**/*.java \
             -Dsonar.java.binaries=none \
@@ -101,7 +101,7 @@ jobs:
 
   Prebuild-Dependency-Analysis:
     runs-on: self-hosted
-    needs: setup
+    needs: [setup, Prebuild-sonarScannerCloudScan]
     defaults:
       run:
         working-directory: /runner/shared-workspace
@@ -138,7 +138,7 @@ jobs:
 
   build:
       runs-on: self-hosted
-      needs: setup
+      needs: [setup, Prebuild-sonarScannerCloudScan]
       outputs:
         BUILD_STATUS: ${{ steps.set_build_status.outputs.BUILD_STATUS }}
         BUILD_ERROR: ${{ steps.set_build_status.outputs.BUILD_ERROR }}
