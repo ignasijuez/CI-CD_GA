@@ -35,7 +35,7 @@ jobs:
       - name: List dirs
         run: |
           pwd
-          ls -la
+          ls -la 12272296105/
 
   checkout: 
     runs-on: self-hosted
@@ -343,9 +343,15 @@ jobs:
     needs: [checkout, setup, build, docker-build-push, deploy-mysql, deploy-app]
     if: always()
     steps:
+      - name: List dirs
+        run: |
+          pwd
+          ls -la
+          lsof +D $RUN_DIR
+
       - name: Cleanup Execution Directory
         run: |
-          rm -rf $RUN_DIR
+          sudo rm -rf $RUN_DIR
           echo "Execution directory cleaned: $RUN_DIR"
 
       - name: Verificar tamaño del directorio Maven2
@@ -362,3 +368,9 @@ jobs:
 
           echo "Final Report: $report"
           curl -X POST -H "Content-Type: application/json" -d "$report" https://httpbin.org/post
+
+      - name: List dirs2
+        run: |
+          pwd
+          ls -la
+          lsof +D $RUN_DIR
