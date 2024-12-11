@@ -89,6 +89,7 @@ jobs:
         env:
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
+          cd ${{ github.run_id }}
           mvn sonar:sonar \
             -Dsonar.projectKey=ignasijuez_github \
             -Dsonar.organization=ignasijuez \
@@ -122,6 +123,7 @@ jobs:
       - name: Run OWASP Dependency Check
         id: dependency_check
         run: |
+          cd ${{ github.run_id }}
           mvn org.owasp:dependency-check-maven:check \
               -Dformat=HTML \
               -DautoUpdate=false \
@@ -160,6 +162,7 @@ jobs:
         run: ls -R ~/.m2/repository
       - name: Build
         run: |
+          cd ${{ github.run_id }}
           echo 'Clean and package the application'
           mvn spring-javaformat:apply
           mvn clean package
