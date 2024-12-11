@@ -65,6 +65,7 @@ jobs:
         run: | 
           ls -ld /mnt
           pwd
+          whoami
 
       - name: Use PVC for shared workspace
         run: |
