@@ -32,6 +32,10 @@ jobs:
           mkdir -p $RUN_DIR
           echo "Execution directory created: $RUN_DIR"
           echo "RUN_DIR=$RUN_DIR" >> $GITHUB_ENV
+      - name: List dirs
+        run: |
+          pwd
+          ls -la
 
   checkout: 
     runs-on: self-hosted
