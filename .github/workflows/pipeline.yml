@@ -26,25 +26,12 @@ jobs:
   setup-env:
     runs-on: self-hosted
     steps:
-      - name: Create PVC for the pipeline
+      - name: Setup Execution Directory
         run: |
-          cat <<EOF | kubectl apply -f -
-          apiVersion: v1
-          kind: PersistentVolumeClaim
-          metadata:
-            name: pipeline-${{ github.run_id }}
-            labels:
-              app: pipeline
-          spec:
-            accessModes:
-            - ReadWriteMany
-            resources:
-              requests:
-                storage: 5Gi
-          EOF
-
-      - name: Export PVC name
-        run: echo "PVC_NAME=pipeline-${{ github.run_id }}" >> $GITHUB_ENV
+          export RUN_DIR="${{ github.run_id }}"
+          mkdir -p $RUN_DIR
+          echo "Execution directory created: $RUN_DIR"
+          echo "RUN_DIR=$RUN_DIR" >> $GITHUB_ENV
 
   checkout: 
     runs-on: self-hosted
@@ -61,25 +48,11 @@ jobs:
       - name: Verificar tamaño del directorio Maven
         run: du -sh ~/.m2/repository
 
-      - name: test
-        run: | 
-          ls -ld /mnt
-          pwd
-          whoami
-
-      - name: Use PVC for shared workspace
-        run: |
-          export PVC_NAME=pipeline-${{ github.run_id }}
-          export WORKSPACE=/mnt/$PVC_NAME
-          mkdir -p $WORKSPACE
-          echo "WORKSPACE=$WORKSPACE" >> $GITHUB_ENV
-
       - name: checkout
         uses: actions/checkout@v4 #predefined action from the marketplace
         with: 
           repository: ${{ inputs.REPO_URL }}
           ref: ${{ inputs.BRANCH }}
-          path: $WORKSPACE
 
       #- name: List repo contents
       #  run: ls -R /runner/_work/CICD_GA/CICD_GA
@@ -115,7 +88,6 @@ jobs:
         env:
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          cd $WORKSPACE
           mvn sonar:sonar \
             -Dsonar.projectKey=ignasijuez_github \
             -Dsonar.organization=ignasijuez \
@@ -149,7 +121,6 @@ jobs:
       - name: Run OWASP Dependency Check
         id: dependency_check
         run: |
-          cd $WORKSPACE
           mvn org.owasp:dependency-check-maven:check \
               -Dformat=HTML \
               -DautoUpdate=false \
@@ -188,7 +159,6 @@ jobs:
         run: ls -R ~/.m2/repository
       - name: Build
         run: |
-          cd $WORKSPACE
           echo 'Clean and package the application'
           mvn spring-javaformat:apply
           mvn clean package
