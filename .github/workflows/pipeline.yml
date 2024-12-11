@@ -53,9 +53,10 @@ jobs:
         with: 
           repository: ${{ inputs.REPO_URL }}
           ref: ${{ inputs.BRANCH }}
+          path: ${{ github.run_id }}
 
-      #- name: List repo contents
-      #  run: ls -R /runner/_work/CICD_GA/CICD_GA
+      - name: List repo contents
+        run: ls -R /runner/_work/CICD_GA/CICD_GA
 
   setup:
     runs-on: self-hosted
@@ -335,9 +336,10 @@ jobs:
     needs: [checkout, setup, build, docker-build-push, deploy-mysql, deploy-app]
     if: always()
     steps:
-      - name: Delete PVC
+      - name: Cleanup Execution Directory
         run: |
-          kubectl delete pvc pipeline-${{ github.run_id }} || true
+          rm -rf $RUN_DIR
+          echo "Execution directory cleaned: $RUN_DIR"
 
       - name: Verificar tamaño del directorio Maven2
         run: du -sh ~/.m2/repository
