@@ -61,6 +61,11 @@ jobs:
       - name: Verificar tamaño del directorio Maven
         run: du -sh ~/.m2/repository
 
+      - name: test
+        run: | 
+          ls -ld /mnt
+          pwd
+
       - name: Use PVC for shared workspace
         run: |
           export PVC_NAME=pipeline-${{ github.run_id }}
@@ -362,7 +367,7 @@ jobs:
       - name: Delete PVC
         run: |
           kubectl delete pvc pipeline-${{ github.run_id }} || true
-          
+
       - name: Verificar tamaño del directorio Maven2
         run: du -sh ~/.m2/repository
 
