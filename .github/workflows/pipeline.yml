@@ -35,7 +35,7 @@ jobs:
       - name: List dirs
         run: |
           pwd
-          ls -la 12272296105/
+          ls -la
 
   checkout: 
     runs-on: self-hosted
@@ -347,7 +347,6 @@ jobs:
         run: |
           pwd
           ls -la
-          lsof +D $RUN_DIR
 
       - name: Cleanup Execution Directory
         run: |
@@ -373,5 +372,4 @@ jobs:
         run: |
           pwd
           ls -la
-          lsof +D $RUN_DIR
 
