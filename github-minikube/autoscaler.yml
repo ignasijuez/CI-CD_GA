@@ -7,7 +7,7 @@ spec:
   scaleTargetRef:
     name: example-runnerdeploy # Nombre de tu RunnerDeployment
   minReplicas: 1               # Mínimo número de runners
-  maxReplicas: 5               # Máximo número de runners
+  maxReplicas: 10               # Máximo número de runners
   metrics:
     - type: TotalNumberOfQueuedAndInProgressWorkflowRuns
       repositoryNames:

@@ -23,8 +23,32 @@ on:
         required: true
 
 jobs:
+  setup-env:
+    runs-on: self-hosted
+    steps:
+      - name: Create PVC for the pipeline
+        run: |
+          cat <<EOF | kubectl apply -f -
+          apiVersion: v1
+          kind: PersistentVolumeClaim
+          metadata:
+            name: pipeline-${{ github.run_id }}
+            labels:
+              app: pipeline
+          spec:
+            accessModes:
+            - ReadWriteMany
+            resources:
+              requests:
+                storage: 5Gi
+          EOF
+
+      - name: Export PVC name
+        run: echo "PVC_NAME=pipeline-${{ github.run_id }}" >> $GITHUB_ENV
+
   checkout: 
     runs-on: self-hosted
+    needs: setup-env
     steps:
       #- name: Check hour and fail if inside time range
       #  run: |
@@ -37,12 +61,20 @@ jobs:
       - name: Verificar tamaño del directorio Maven
         run: du -sh ~/.m2/repository
 
+      - name: Use PVC for shared workspace
+        run: |
+          export PVC_NAME=pipeline-${{ github.run_id }}
+          export WORKSPACE=/mnt/$PVC_NAME
+          mkdir -p $WORKSPACE
+          echo "WORKSPACE=$WORKSPACE" >> $GITHUB_ENV
+
       - name: checkout
         uses: actions/checkout@v4 #predefined action from the marketplace
         with: 
           repository: ${{ inputs.REPO_URL }}
           ref: ${{ inputs.BRANCH }}
-          
+          path: $WORKSPACE
+
       #- name: List repo contents
       #  run: ls -R /runner/_work/CICD_GA/CICD_GA
 
@@ -77,6 +109,7 @@ jobs:
         env:
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
+          cd $WORKSPACE
           mvn sonar:sonar \
             -Dsonar.projectKey=ignasijuez_github \
             -Dsonar.organization=ignasijuez \
@@ -110,6 +143,7 @@ jobs:
       - name: Run OWASP Dependency Check
         id: dependency_check
         run: |
+          cd $WORKSPACE
           mvn org.owasp:dependency-check-maven:check \
               -Dformat=HTML \
               -DautoUpdate=false \
@@ -148,6 +182,7 @@ jobs:
         run: ls -R ~/.m2/repository
       - name: Build
         run: |
+          cd $WORKSPACE
           echo 'Clean and package the application'
           mvn spring-javaformat:apply
           mvn clean package
@@ -324,6 +359,10 @@ jobs:
     needs: [checkout, setup, build, docker-build-push, deploy-mysql, deploy-app]
     if: always()
     steps:
+      - name: Delete PVC
+        run: |
+          kubectl delete pvc pipeline-${{ github.run_id }} || true
+          
       - name: Verificar tamaño del directorio Maven2
         run: du -sh ~/.m2/repository
 
