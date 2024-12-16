@@ -70,14 +70,19 @@ jobs:
         run: ls -R ~/.m2/repository
 
       # Cache Maven dependencies
-      #- name: Cache Maven packages
-      #  if: "!steps.cache-maven-packages.outputs.cache-hit"
-      #  uses: actions/cache@v4
-      #  with:
-      #    path: ~/.m2/repository
-      #    key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-      #    restore-keys: |
-      #      ${{ runner.os }}-maven-
+      - name: Cache Maven packages
+        if: "!steps.cache-maven-packages.outputs.cache-hit"
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+          # Excluir archivos innecesarios
+          exclude-paths: |
+            **/*.lastUpdated
+            **/tmp
+            **/logs
       
   Prebuild-sonarScannerCloudScan:
     runs-on: self-hosted
