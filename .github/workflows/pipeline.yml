@@ -71,6 +71,7 @@ jobs:
 
       # Cache Maven dependencies
       - name: Cache Maven packages
+        if: "!steps.cache-maven-packages.outputs.cache-hit"
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
