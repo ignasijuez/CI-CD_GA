@@ -59,8 +59,8 @@ jobs:
           ref: ${{ inputs.BRANCH }}
           path: ${{ github.run_id }}
 
-      - name: List repo contents
-        run: ls -R /runner/_work/CICD_GA/CICD_GA
+      #- name: List repo contents
+      #  run: ls -R /runner/_work/CICD_GA/CICD_GA
 
   setup:
     runs-on: self-hosted
@@ -70,14 +70,14 @@ jobs:
         run: ls -R ~/.m2/repository
 
       # Cache Maven dependencies
-      - name: Cache Maven packages
-        if: "!steps.cache-maven-packages.outputs.cache-hit"
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+      #- name: Cache Maven packages
+      #  if: "!steps.cache-maven-packages.outputs.cache-hit"
+      #  uses: actions/cache@v4
+      #  with:
+      #    path: ~/.m2/repository
+      #    key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+      #    restore-keys: |
+      #      ${{ runner.os }}-maven-
       
   Prebuild-sonarScannerCloudScan:
     runs-on: self-hosted
