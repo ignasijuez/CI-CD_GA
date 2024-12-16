@@ -69,6 +69,10 @@ jobs:
       - name: List Maven dependencies
         run: ls -R ~/.m2/repository
 
+      - name: Print Cache Key
+        run: |
+          echo "Cache Key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}"
+
       # Cache Maven dependencies
       - name: Cache Maven packages
         if: "!steps.cache-maven-packages.outputs.cache-hit"
@@ -78,11 +82,10 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-          # Excluir archivos innecesarios
-          exclude-paths: |
-            **/*.lastUpdated
-            **/tmp
-            **/logs
+
+      - name: Print Cache Key
+        run: |
+          echo "Cache Key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}"
       
   Prebuild-sonarScannerCloudScan:
     runs-on: self-hosted
