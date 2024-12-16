@@ -79,7 +79,6 @@ jobs:
             ${{ runner.os }}-maven-
             
       
-
   Prebuild-sonarScannerCloudScan:
     runs-on: self-hosted
     needs: setup
