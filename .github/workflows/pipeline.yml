@@ -47,7 +47,7 @@ jobs:
       #    if [ "$currentHour" -ge 2 ] && [ "$currentHour" -lt 3 ]; then
       #      echo "El pipeline se termina porque no es la hora adecuada"
       #      exit 1
-      #    fi
+      #    fi#
 
       - name: Verificar tamaño del directorio Maven
         run: du -sh ~/.m2/repository
