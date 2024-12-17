@@ -85,9 +85,6 @@ jobs:
     outputs:
       TASK_ID: ${{ steps.extract_task_id.outputs.task_id }} # Define el output
     steps:
-      - name: Change directory
-        run: cd ${{ github.run_id }}
-
       - name: Run SonarScanner
         env:
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -105,11 +102,14 @@ jobs:
             -X
 
       - name: Locate report-task.txt
-        run: find . -name "report-task.txt"
+        run: |
+          cd ${{ github.run_id }}
+          find . -name "report-task.txt"
 
       - name: Extract SonarCloud Task ID
         id: extract_task_id
         run: |
+          cd ${{ github.run_id }}
           if [ ! -f ./${{ github.run_id }}/target/sonar/report-task.txt ]; then
             echo "SonarCloud report-task.txt not found!"
             exit 1
@@ -123,9 +123,6 @@ jobs:
     runs-on: self-hosted
     needs: setup
     steps:
-      - name: Change directory
-        run: cd ${{ github.run_id }}
-
       - name: Run OWASP Dependency Check
         id: dependency_check
         run: |
@@ -149,6 +146,7 @@ jobs:
       # Determine Dependency-Check Result
       - name: Determine Dependency Check Result
         run: |
+          cd ${{ github.run_id }}
           if [ "${{ env.exit_code }}" -ne 0 ]; then
             echo "Dependency validation failed. Vulnerabilities detected!"
             echo "UNSTABLE: Dependency validation did not pass."
@@ -164,19 +162,12 @@ jobs:
         BUILD_STATUS: ${{ steps.set_build_status.outputs.BUILD_STATUS }}
         BUILD_ERROR: ${{ steps.set_build_status.outputs.BUILD_ERROR }}
       steps:
-      - name: Change directory
-        run: cd ${{ github.run_id }}
-
       - name: Build
         run: |
           cd ${{ github.run_id }}
           echo 'Clean and package the application'
           mvn spring-javaformat:apply
           mvn clean package
-      - name: List dirs
-        run: |
-          pwd
-          ls -la $RUN_DIR
 
   #setup2:
   #  runs-on: self-hosted
@@ -194,14 +185,6 @@ jobs:
     runs-on: self-hosted
     needs: build
     steps:
-      - name: Change directory
-        run: cd ${{ github.run_id }}
-
-      - name: List dirs
-        run: |
-          pwd
-          ls -la $RUN_DIR
-
       - name: Log in to DockerHub
         uses: docker/login-action@v2
         with:
@@ -217,7 +200,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ./cd ${{ github.run_id }}/
           push: true
           tags: juezignasi/ga-app:latest
       #  run: |
@@ -227,14 +210,12 @@ jobs:
     runs-on: self-hosted
     needs: [docker-build-push, Prebuild-sonarScannerCloudScan, Prebuild-Dependency-Analysis]
     steps:
-      - name: Change directory
-        run: cd ${{ github.run_id }}
-
       - name: Check SonarCloud Task Status
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           TASK_ID: ${{ needs.Prebuild-sonarScannerCloudScan.outputs.TASK_ID }}
         run: |
+          cd ${{ github.run_id }}
           if [ -z "$TASK_ID" ]; then
             echo "No Task ID found, skipping SonarCloud status check."
             exit 1
@@ -288,11 +269,10 @@ jobs:
     runs-on: self-hosted
     needs: [Check-SonarCloud-Results]
     steps:
-      - name: Change directory
-        run: cd ${{ github.run_id }}
-
       - name: Deploy MySQL
-        run: kubectl apply -f github-actions-k8s/mysql-deployment.yml
+        run: |
+          cd ${{ github.run_id }}
+          kubectl apply -f github-actions-k8s/mysql-deployment.yml
 
       - name: Get MySQL Pod Name
         run: |
@@ -316,6 +296,7 @@ jobs:
 
       - name: Copy Init Scripts to MySQL Pod
         run: |
+          cd ${{ github.run_id }}
           kubectl cp ./src/main/resources/db/mysql_k8s/. $MYSQL_POD:/docker-entrypoint-initdb.d/
         env:
           MYSQL_POD: ${{ env.MYSQL_POD }}
@@ -339,28 +320,27 @@ jobs:
     runs-on: self-hosted
     needs: deploy-mysql
     steps:
-      - name: Change directory
-        run: cd ${{ github.run_id }}
-
       - name: Run Liquibase Update
         run: |
+          cd ${{ github.run_id }}
           liquibase \
             --defaultsFile=src/main/resources/liquibase.properties \
             --classpath=src/main/resources/mysql-connector-j-9.1.0.jar \
             update
 
       - name: Update app
-        run: kubectl delete pod -l app=github-petclinic-pod
+        run: |
+          cd ${{ github.run_id }}
+          kubectl delete pod -l app=github-petclinic-pod
 
   deploy-app:
     runs-on: self-hosted
     needs: liquibase-update2
     steps:  
-      - name: Change directory
-        run: cd ${{ github.run_id }}
-
       - name: Deploy PetClinic
-        run: kubectl apply -f github-actions-k8s/deployment.yml
+        run: |
+          cd ${{ github.run_id }}
+          kubectl apply -f github-actions-k8s/deployment.yml
 
       - name: Verify Pods
         run: kubectl get pods -o wide
@@ -370,14 +350,6 @@ jobs:
     needs: [checkout, setup, build, docker-build-push, deploy-mysql, deploy-app]
     if: always()
     steps:
-      - name: Change directory
-        run: cd ${{ github.run_id }}
-
-      - name: List dirs
-        run: |
-          pwd
-          ls -la
-
       - name: Cleanup Execution Directory
         run: |
           sudo rm -rfd ${{ github.run_id }}
