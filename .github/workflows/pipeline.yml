@@ -66,8 +66,8 @@ jobs:
     runs-on: self-hosted
     needs: checkout
     steps:
-      - name: List Maven dependencies
-        run: ls -R ~/.m2/repository
+      - name: Change directory
+        run: cd $RUN_DIR
 
       # Cache Maven dependencies
       #- name: Cache Maven packages
@@ -85,8 +85,8 @@ jobs:
     outputs:
       TASK_ID: ${{ steps.extract_task_id.outputs.task_id }} # Define el output
     steps:
-      - name: Verify Maven
-        run: mvn -version
+      - name: Change directory
+        run: cd $RUN_DIR
 
       - name: Run SonarScanner
         env:
@@ -123,6 +123,9 @@ jobs:
     runs-on: self-hosted
     needs: setup
     steps:
+      - name: Change directory
+        run: cd $RUN_DIR
+
       - name: Run OWASP Dependency Check
         id: dependency_check
         run: |
@@ -161,8 +164,9 @@ jobs:
         BUILD_STATUS: ${{ steps.set_build_status.outputs.BUILD_STATUS }}
         BUILD_ERROR: ${{ steps.set_build_status.outputs.BUILD_ERROR }}
       steps:
-      - name: List Maven dependencies
-        run: ls -R ~/.m2/repository
+      - name: Change directory
+        run: cd $RUN_DIR
+
       - name: Build
         run: |
           cd ${{ github.run_id }}
@@ -190,6 +194,9 @@ jobs:
     runs-on: self-hosted
     needs: build
     steps:
+      - name: Change directory
+        run: cd $RUN_DIR
+
       - name: List dirs
         run: |
           pwd
@@ -220,6 +227,9 @@ jobs:
     runs-on: self-hosted
     needs: [docker-build-push, Prebuild-sonarScannerCloudScan, Prebuild-Dependency-Analysis]
     steps:
+      - name: Change directory
+        run: cd $RUN_DIR
+
       - name: Check SonarCloud Task Status
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -278,6 +288,9 @@ jobs:
     runs-on: self-hosted
     needs: [Check-SonarCloud-Results]
     steps:
+      - name: Change directory
+        run: cd $RUN_DIR
+
       - name: Deploy MySQL
         run: kubectl apply -f github-actions-k8s/mysql-deployment.yml
 
@@ -326,6 +339,9 @@ jobs:
     runs-on: self-hosted
     needs: deploy-mysql
     steps:
+      - name: Change directory
+        run: cd $RUN_DIR
+
       - name: Run Liquibase Update
         run: |
           liquibase \
@@ -340,6 +356,9 @@ jobs:
     runs-on: self-hosted
     needs: liquibase-update2
     steps:  
+      - name: Change directory
+        run: cd $RUN_DIR
+
       - name: Deploy PetClinic
         run: kubectl apply -f github-actions-k8s/deployment.yml
 
@@ -351,6 +370,9 @@ jobs:
     needs: [checkout, setup, build, docker-build-push, deploy-mysql, deploy-app]
     if: always()
     steps:
+      - name: Change directory
+        run: cd $RUN_DIR
+        
       - name: List dirs
         run: |
           pwd
