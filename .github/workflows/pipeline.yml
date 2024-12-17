@@ -68,7 +68,7 @@ jobs:
     steps:
       - name: Change directory
         run: |
-          pwd
+          cd ${{ github.run_id }}
           ls -la
 
       # Cache Maven dependencies
