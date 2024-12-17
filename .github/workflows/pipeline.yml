@@ -112,7 +112,7 @@ jobs:
         run: |
           cd ${{ github.run_id }}
           ls -la target/sonar/
-          if [ ! -f ./${{ github.run_id }}/target/sonar/scanner-report/report-task.txt ]; then
+          if [ ! -f ./${{ github.run_id }}/target/sonar/report-task.txt ]; then
             echo "SonarCloud report-task.txt not found!"
             exit 1
           fi
