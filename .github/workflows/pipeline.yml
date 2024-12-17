@@ -48,7 +48,10 @@ jobs:
       #      echo "El pipeline se termina porque no es la hora adecuada"
       #      exit 1
       #    fi
-      
+      - name: check env
+        run: |
+          echo $RUN_DIR
+
       - name: Verificar tamaño del directorio Maven
         run: du -sh ~/.m2/repository
 
