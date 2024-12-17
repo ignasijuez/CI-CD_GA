@@ -111,12 +111,11 @@ jobs:
         id: extract_task_id
         run: |
           cd ${{ github.run_id }}
-          ls -la target/sonar/
-          if [ ! -f ./${{ github.run_id }}/target/sonar/report-task.txt ]; then
+          if [ ! -f ./target/sonar/report-task.txt ]; then
             echo "SonarCloud report-task.txt not found!"
             exit 1
           fi
-          task_id=$(grep 'ceTaskId' ./${{ github.run_id }}/target/sonar/scanner-report/report-task.txt | cut -d '=' -f 2)
+          task_id=$(grep 'ceTaskId' ./${{ github.run_id }}/target/sonar/report-task.txt | cut -d '=' -f 2)
           echo "Task ID: $task_id"
           echo "::set-output name=task_id::$task_id"
         continue-on-error: false
