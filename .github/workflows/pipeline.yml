@@ -169,6 +169,10 @@ jobs:
           echo 'Clean and package the application'
           mvn spring-javaformat:apply
           mvn clean package
+      - name: List dirs
+        run: |
+          pwd
+          ls -la
 
   #setup2:
   #  runs-on: self-hosted
@@ -186,6 +190,11 @@ jobs:
     runs-on: self-hosted
     needs: build
     steps:
+      - name: List dirs
+        run: |
+          pwd
+          ls -la
+          
       - name: Log in to DockerHub
         uses: docker/login-action@v2
         with:
