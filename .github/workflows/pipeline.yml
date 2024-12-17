@@ -67,9 +67,7 @@ jobs:
     needs: checkout
     steps:
       - name: Change directory
-        run: |
-          cd ${{ github.run_id }}
-          ls -la
+        run: cd ${{ github.run_id }}
 
       # Cache Maven dependencies
       #- name: Cache Maven packages
@@ -88,7 +86,7 @@ jobs:
       TASK_ID: ${{ steps.extract_task_id.outputs.task_id }} # Define el output
     steps:
       - name: Change directory
-        run: cd $RUN_DIR
+        run: cd ${{ github.run_id }}
 
       - name: Run SonarScanner
         env:
@@ -126,7 +124,7 @@ jobs:
     needs: setup
     steps:
       - name: Change directory
-        run: cd $RUN_DIR
+        run: cd ${{ github.run_id }}
 
       - name: Run OWASP Dependency Check
         id: dependency_check
@@ -167,7 +165,7 @@ jobs:
         BUILD_ERROR: ${{ steps.set_build_status.outputs.BUILD_ERROR }}
       steps:
       - name: Change directory
-        run: cd $RUN_DIR
+        run: cd ${{ github.run_id }}
 
       - name: Build
         run: |
@@ -197,7 +195,7 @@ jobs:
     needs: build
     steps:
       - name: Change directory
-        run: cd $RUN_DIR
+        run: cd ${{ github.run_id }}
 
       - name: List dirs
         run: |
@@ -230,7 +228,7 @@ jobs:
     needs: [docker-build-push, Prebuild-sonarScannerCloudScan, Prebuild-Dependency-Analysis]
     steps:
       - name: Change directory
-        run: cd $RUN_DIR
+        run: cd ${{ github.run_id }}
 
       - name: Check SonarCloud Task Status
         env:
@@ -291,7 +289,7 @@ jobs:
     needs: [Check-SonarCloud-Results]
     steps:
       - name: Change directory
-        run: cd $RUN_DIR
+        run: cd ${{ github.run_id }}
 
       - name: Deploy MySQL
         run: kubectl apply -f github-actions-k8s/mysql-deployment.yml
@@ -342,7 +340,7 @@ jobs:
     needs: deploy-mysql
     steps:
       - name: Change directory
-        run: cd $RUN_DIR
+        run: cd ${{ github.run_id }}
 
       - name: Run Liquibase Update
         run: |
@@ -359,7 +357,7 @@ jobs:
     needs: liquibase-update2
     steps:  
       - name: Change directory
-        run: cd $RUN_DIR
+        run: cd ${{ github.run_id }}
 
       - name: Deploy PetClinic
         run: kubectl apply -f github-actions-k8s/deployment.yml
@@ -373,7 +371,7 @@ jobs:
     if: always()
     steps:
       - name: Change directory
-        run: cd $RUN_DIR
+        run: cd ${{ github.run_id }}
 
       - name: List dirs
         run: |
@@ -382,8 +380,8 @@ jobs:
 
       - name: Cleanup Execution Directory
         run: |
-          sudo rm -rf $RUN_DIR
-          echo "Execution directory cleaned: $RUN_DIR"
+          sudo rm -rfd ${{ github.run_id }}
+          echo "Execution directory cleaned: RUN_DIR"
 
       - name: Verificar tamaño del directorio Maven2
         run: du -sh ~/.m2/repository
