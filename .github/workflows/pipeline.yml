@@ -68,7 +68,6 @@ jobs:
     steps:
       - name: Change directory
         run: |
-          cd $RUN_DIR
           pwd
           ls -la
 
