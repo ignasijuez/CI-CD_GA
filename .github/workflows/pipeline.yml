@@ -104,13 +104,14 @@ jobs:
       - name: Locate report-task.txt
         run: |
           cd ${{ github.run_id }}
-          ls -la target/sonar/scanner-report/
+          ls -la target/sonar/
           find . -name "report-task.txt"
 
       - name: Extract SonarCloud Task ID
         id: extract_task_id
         run: |
           cd ${{ github.run_id }}
+          ls -la target/sonar/
           if [ ! -f ./${{ github.run_id }}/target/sonar/scanner-report/report-task.txt ]; then
             echo "SonarCloud report-task.txt not found!"
             exit 1
@@ -199,13 +200,13 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v6
-        with:
-          context: ./${{ github.run_id }}/
-          push: true
-          tags: juezignasi/ga-app:latest
-      #  run: |
-      #    sleep 10
+      #  uses: docker/build-push-action@v6
+      #  with:
+      #    context: ./${{ github.run_id }}/
+      #    push: true
+      #    tags: juezignasi/ga-app:latest
+        run: |
+          sleep 5
 
   Check-SonarCloud-Results:
     runs-on: self-hosted
