@@ -205,7 +205,7 @@ jobs:
       #    push: true
       #    tags: juezignasi/ga-app:latest
         run: |
-          sleep 5
+          sleep 120
 
   Check-SonarCloud-Results:
     runs-on: self-hosted
