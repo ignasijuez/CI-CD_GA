@@ -62,6 +62,9 @@ jobs:
       - name: List repo contents
         run: ls /runner/_work/CICD_GA/CICD_GA/${{ github.run_id }}
 
+      - name: Verificar tamaño del directorio Maven
+        run: du -sh ~/.m2/repository
+
   setup:
     runs-on: self-hosted
     needs: checkout
@@ -345,6 +348,9 @@ jobs:
 
       - name: Verify Pods
         run: kubectl get pods -o wide
+
+      - name: Verificar tamaño del directorio Maven
+        run: du -sh ~/.m2/repository
 
   final-report:
     runs-on: self-hosted
