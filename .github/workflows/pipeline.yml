@@ -79,12 +79,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       
-      - name: Verificar tamaño del directorio Maven
-        run: du -sh ~/.m2/repository
-
-      - name: Verificar configuración de Maven
+      - name: Verificar contenido del caché restaurado
         run: |
-          mvn help:effective-settings
+          echo "Contenido del directorio Maven:"
+          ls -la ~/.m2/repository
+          du -sh ~/.m2/repository
+
       
   Prebuild-sonarScannerCloudScan:
     runs-on: self-hosted
