@@ -62,12 +62,12 @@ jobs:
       - name: List repo contents
         run: ls /runner/_work/CICD_GA/CICD_GA/${{ github.run_id }}
 
-  #setup:
-  #  runs-on: self-hosted
-  #  needs: checkout
-  #  steps:
-  #    - name: Change directory
-  #      run: cd ${{ github.run_id }}
+  setup:
+    runs-on: self-hosted
+    needs: checkout
+    steps:
+      - name: Change directory
+        run: cd ${{ github.run_id }}
 
       # Cache Maven dependencies
   #    - name: Cache Maven packages
