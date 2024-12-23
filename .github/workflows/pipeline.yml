@@ -69,6 +69,7 @@ jobs:
       - name: Change directory
         run: cd ${{ github.run_id }}
 
+
       # Cache Maven dependencies
       - name: Cache Maven packages
         if: "!steps.cache-maven-packages.outputs.cache-hit"
