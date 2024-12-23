@@ -122,6 +122,7 @@ jobs:
             -Dsonar.java.binaries=none \
             -Dsonar.qualitygate.wait=false \
             -X
+          du -sh ~/.m2/repository
 
       - name: Locate report-task.txt
         run: |
