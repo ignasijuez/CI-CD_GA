@@ -37,6 +37,12 @@ jobs:
           pwd
           ls -la
 
+      - name: test
+        run: |
+          cd /runner/_work/CICD_GA/CICD_GA
+          ls -la
+          pwd
+          
   checkout: 
     runs-on: self-hosted
     needs: setup-env
@@ -86,6 +92,7 @@ jobs:
           du -sh ~/.m2/repository
           cd ~/.m2/repository
           pwd
+
 
   Prebuild-sonarScannerCloudScan:
     runs-on: self-hosted
