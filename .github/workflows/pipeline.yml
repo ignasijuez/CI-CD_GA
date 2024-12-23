@@ -111,7 +111,7 @@ jobs:
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           cd ${{ github.run_id }}
-          mkdir -p /target/sonar/scanner-report
+          #mkdir -p /target/sonar/scanner-report
           mvn sonar:sonar \
             -Dsonar.projectKey=ignasijuez_github \
             -Dsonar.organization=ignasijuez \
@@ -152,7 +152,7 @@ jobs:
           cd ${{ github.run_id }}
           mvn org.owasp:dependency-check-maven:check \
               -Dformat=HTML \
-              -DautoUpdate=true \
+              -DautoUpdate=false \
               -Dexcludes=com.h2database:h2 \
               -DfailBuildOnCVSS=1.0 \
               -DoutputDirectory=dependency-check-report || exit_code=$?
