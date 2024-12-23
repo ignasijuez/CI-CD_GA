@@ -47,7 +47,7 @@ jobs:
         run: |
           cd ~/.m2/repository
           pwd
-          touch abc.txt
+          ls -la
 
   checkout: 
     runs-on: self-hosted
