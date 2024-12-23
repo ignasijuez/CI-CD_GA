@@ -85,6 +85,8 @@ jobs:
           echo "Contenido del directorio Maven:"
           ls -la ~/.m2/repository
           du -sh ~/.m2/repository
+          cd ~/.m2/repository
+          pwd
 
   Prebuild-sonarScannerCloudScan:
     runs-on: self-hosted
