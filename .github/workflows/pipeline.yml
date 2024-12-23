@@ -42,7 +42,12 @@ jobs:
           cd /runner/_work/CICD_GA/CICD_GA
           ls -la
           pwd
-          sleep 3600
+
+      - name: test2
+        run: |
+          cd ~/.m2/repository
+          pwd
+          touch abc.txt
 
   checkout: 
     runs-on: self-hosted
