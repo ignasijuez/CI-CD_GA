@@ -100,7 +100,6 @@ jobs:
           cd ~/.m2/repository
           pwd
 
-
   Prebuild-sonarScannerCloudScan:
     runs-on: self-hosted
     needs: setup
