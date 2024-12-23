@@ -21,6 +21,6 @@ spec:
         - name: shared-workspace
           persistentVolumeClaim:
             claimName: work-pvc
-        - name: maven-bin
+        - name: m2-repository
           persistentVolumeClaim:
             claimName: maven-pvc
