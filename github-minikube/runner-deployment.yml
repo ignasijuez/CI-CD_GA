@@ -11,7 +11,7 @@ spec:
       image: juezignasi/github-actions-runner:latest
       env:
         - name: RUNNER_GROUP
-          value: "Default" # Opcional: especifica el grupo del runner si usas uno
+          value: "Default"
       volumeMounts:
         - name: shared-workspace
           mountPath: /runner/_work/CICD_GA/CICD_GA

@@ -42,6 +42,7 @@ jobs:
           cd /runner/_work/CICD_GA/CICD_GA
           ls -la
           pwd
+          sleep 3600
 
   checkout: 
     runs-on: self-hosted
