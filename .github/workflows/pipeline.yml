@@ -62,31 +62,30 @@ jobs:
       - name: List repo contents
         run: ls /runner/_work/CICD_GA/CICD_GA/${{ github.run_id }}
 
-  setup:
-    runs-on: self-hosted
-    needs: checkout
-    steps:
-      - name: Change directory
-        run: cd ${{ github.run_id }}
-
+  #setup:
+  #  runs-on: self-hosted
+  #  needs: checkout
+  #  steps:
+  #    - name: Change directory
+  #      run: cd ${{ github.run_id }}
 
       # Cache Maven dependencies
-      - name: Cache Maven packages
-        if: "!steps.cache-maven-packages.outputs.cache-hit"
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-general
-          restore-keys: |
-            ${{ runner.os }}-maven-general
+  #    - name: Cache Maven packages
+  #      if: "!steps.cache-maven-packages.outputs.cache-hit"
+  #      uses: actions/cache@v4
+  #      with:
+  #        path: ~/.m2/repository
+  #        key: ${{ runner.os }}-maven-general
+  #        restore-keys: |
+  #          ${{ runner.os }}-maven-general
       
-      - name: Verificar contenido del caché restaurado
-        run: |
-          echo "Contenido del directorio Maven:"
-          ls -la ~/.m2/repository
-          du -sh ~/.m2/repository
-          cd ~/.m2/repository
-          pwd
+  #    - name: Verificar contenido del caché restaurado
+  #      run: |
+  #        echo "Contenido del directorio Maven:"
+  #        ls -la ~/.m2/repository
+  #        du -sh ~/.m2/repository
+  #        cd ~/.m2/repository
+  #        pwd
 
   Prebuild-sonarScannerCloudScan:
     runs-on: self-hosted
@@ -358,17 +357,17 @@ jobs:
       - name: Verificar tamaño del directorio Maven
         run: du -sh ~/.m2/repository
 
-  final-cache:
-    runs-on: self-hosted
-    needs: deploy-app
-    steps:
-      - name: Actualizar caché de Maven
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-general
-          restore-keys: |
-            ${{ runner.os }}-maven-general
+  #final-cache:
+  #  runs-on: self-hosted
+  #  needs: deploy-app
+  #  steps:
+  #    - name: Actualizar caché de Maven
+  #      uses: actions/cache@v4
+  #      with:
+  #        path: ~/.m2/repository
+  #        key: ${{ runner.os }}-maven-general
+  #        restore-keys: |
+  #          ${{ runner.os }}-maven-general
 
   final-report:
     runs-on: self-hosted
