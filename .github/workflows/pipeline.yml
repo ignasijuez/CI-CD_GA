@@ -214,7 +214,7 @@ jobs:
       #    push: true
       #    tags: juezignasi/ga-app:latest
         run: |
-          sleep 120
+          sleep 5
 
   Check-SonarCloud-Results:
     runs-on: self-hosted
@@ -357,6 +357,18 @@ jobs:
 
       - name: Verificar tamaño del directorio Maven
         run: du -sh ~/.m2/repository
+
+  final-cache:
+    runs-on: self-hosted
+    needs: build
+    steps:
+      - name: Actualizar caché de Maven
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-general
+          restore-keys: |
+            ${{ runner.os }}-maven-general
 
   final-report:
     runs-on: self-hosted
