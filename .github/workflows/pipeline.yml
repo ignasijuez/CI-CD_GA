@@ -32,22 +32,22 @@ jobs:
           mkdir -p $RUN_DIR
           echo "Execution directory created: $RUN_DIR"
           echo "RUN_DIR=$RUN_DIR" >> $GITHUB_ENV
-      - name: List dirs
-        run: |
-          pwd
-          ls -la
+      #- name: List dirs
+      #  run: |
+      #    pwd
+      #    ls -la
 
-      - name: test
-        run: |
-          cd /runner/_work/CICD_GA/CICD_GA
-          ls -la
-          pwd
+      #- name: test
+      #  run: |
+      #    cd /runner/_work/CICD_GA/CICD_GA
+      #    ls -la
+      #    pwd
 
-      - name: test2
-        run: |
-          cd ~/.m2/repository
-          pwd
-          ls -la
+      #- name: test2
+      #  run: |
+      #    cd ~/.m2/repository
+      #    pwd
+      #    ls -la
 
   checkout: 
     runs-on: self-hosted
@@ -95,10 +95,10 @@ jobs:
       - name: Verificar contenido del caché restaurado
         run: |
           echo "Contenido del directorio Maven:"
-          ls -la ~/.m2/repository
-          du -sh ~/.m2/repository
-          cd ~/.m2/repository
-          pwd
+      #    ls -la ~/.m2/repository
+      #    du -sh ~/.m2/repository
+      #    cd ~/.m2/repository
+      #    pwd
 
   Prebuild-sonarScannerCloudScan:
     runs-on: self-hosted
@@ -227,7 +227,7 @@ jobs:
       #    push: true
       #    tags: juezignasi/ga-app:latest
         run: |
-          sleep 5
+          sleep 120
 
   Check-SonarCloud-Results:
     runs-on: self-hosted
@@ -368,8 +368,8 @@ jobs:
       - name: Verify Pods
         run: kubectl get pods -o wide
 
-      - name: Verificar tamaño del directorio Maven
-        run: du -sh ~/.m2/repository
+      #- name: Verificar tamaño del directorio Maven
+      #  run: du -sh ~/.m2/repository
 
   #final-cache:
   #  runs-on: self-hosted
@@ -393,8 +393,8 @@ jobs:
           sudo rm -rfd ${{ github.run_id }}
           echo "Execution directory cleaned: RUN_DIR"
 
-      - name: Verificar tamaño del directorio Maven2
-        run: du -sh ~/.m2/repository
+      #- name: Verificar tamaño del directorio Maven2
+      #  run: du -sh ~/.m2/repository
 
       - name: Generate Final Report
         run: |
@@ -408,8 +408,8 @@ jobs:
           echo "Final Report: $report"
           curl -X POST -H "Content-Type: application/json" -d "$report" https://httpbin.org/post
 
-      - name: List dirs2
-        run: |
-          pwd
-          ls -la
+      #- name: List dirs2
+      #  run: |
+      #    pwd
+      #    ls -la
 
