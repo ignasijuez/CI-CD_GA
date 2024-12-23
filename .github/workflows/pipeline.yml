@@ -75,9 +75,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-maven-general
           restore-keys: |
-            ${{ runner.os }}-maven-
+            ${{ runner.os }}-maven-general
       
       - name: Verificar contenido del caché restaurado
         run: |
