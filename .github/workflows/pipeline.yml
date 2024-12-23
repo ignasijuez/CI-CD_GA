@@ -112,6 +112,7 @@ jobs:
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           cd ${{ github.run_id }}
+          du -sh ~/.m2/repository
           mvn sonar:sonar \
             -Dsonar.projectKey=ignasijuez_github \
             -Dsonar.organization=ignasijuez \
@@ -151,6 +152,7 @@ jobs:
         id: dependency_check
         run: |
           cd ${{ github.run_id }}
+          du -sh ~/.m2/repository
           mvn org.owasp:dependency-check-maven:check \
               -Dformat=HTML \
               -DautoUpdate=false \
