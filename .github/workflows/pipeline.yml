@@ -42,7 +42,7 @@ jobs:
           cd /runner/_work/CICD_GA/CICD_GA
           ls -la
           pwd
-          
+
   checkout: 
     runs-on: self-hosted
     needs: setup-env
@@ -67,6 +67,7 @@ jobs:
 
       - name: List repo contents
         run: ls /runner/_work/CICD_GA/CICD_GA/${{ github.run_id }}
+
 
   setup:
     runs-on: self-hosted
