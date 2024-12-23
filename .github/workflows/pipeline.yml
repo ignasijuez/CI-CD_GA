@@ -85,7 +85,6 @@ jobs:
           ls -la ~/.m2/repository
           du -sh ~/.m2/repository
 
-      
   Prebuild-sonarScannerCloudScan:
     runs-on: self-hosted
     needs: setup
