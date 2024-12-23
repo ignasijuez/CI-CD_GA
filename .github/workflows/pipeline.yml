@@ -360,7 +360,7 @@ jobs:
 
   final-cache:
     runs-on: self-hosted
-    needs: build
+    needs: deploy-app
     steps:
       - name: Actualizar caché de Maven
         uses: actions/cache@v4
