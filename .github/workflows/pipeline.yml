@@ -37,6 +37,10 @@ jobs:
           pwd
           ls -la
 
+      - name: Verificar configuración de Maven
+        run: |
+          mvn help:effective-settings
+
   checkout: 
     runs-on: self-hosted
     needs: setup-env
@@ -62,9 +66,6 @@ jobs:
       - name: List repo contents
         run: ls /runner/_work/CICD_GA/CICD_GA/${{ github.run_id }}
 
-      - name: Verificar tamaño del directorio Maven
-        run: du -sh ~/.m2/repository
-
   setup:
     runs-on: self-hosted
     needs: checkout
@@ -81,6 +82,9 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      
+      - name: Verificar tamaño del directorio Maven
+        run: du -sh ~/.m2/repository
       
   Prebuild-sonarScannerCloudScan:
     runs-on: self-hosted
