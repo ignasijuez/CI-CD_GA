@@ -37,10 +37,6 @@ jobs:
           pwd
           ls -la
 
-      - name: Verificar configuración de Maven
-        run: |
-          mvn help:effective-settings
-
   checkout: 
     runs-on: self-hosted
     needs: setup-env
@@ -85,6 +81,10 @@ jobs:
       
       - name: Verificar tamaño del directorio Maven
         run: du -sh ~/.m2/repository
+
+      - name: Verificar configuración de Maven
+        run: |
+          mvn help:effective-settings
       
   Prebuild-sonarScannerCloudScan:
     runs-on: self-hosted
