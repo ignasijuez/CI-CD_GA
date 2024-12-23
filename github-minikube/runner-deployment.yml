@@ -15,12 +15,12 @@ spec:
       volumeMounts:
         - name: shared-workspace
           mountPath: /runner/_work/CICD_GA/CICD_GA
-        #- name: m2-repository
-        #  mountPath: /.m2/repository
+        - name: m2-repository
+          mountPath: /home/runner/.m2/repository
       volumes:
         - name: shared-workspace
           persistentVolumeClaim:
             claimName: work-pvc
-        #- name: maven-bin
-        #  persistentVolumeClaim:
-        #    claimName: maven-pvc
+        - name: maven-bin
+          persistentVolumeClaim:
+            claimName: maven-pvc
